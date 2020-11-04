@@ -2,6 +2,7 @@
   "name": "smart_telesope",
   "private": true,
   "dependencies": {
+    "@ant-design/icons": "^4.2.2",
     "@babel/preset-react": "^7.12.1",
     "@rails/actioncable": "^6.0.0",
     "@rails/activestorage": "^6.0.0",
@@ -14,6 +15,7 @@
     "react": "^16.14.0",
     "react-bootstrap": "^1.4.0",
     "react-dom": "^16.14.0",
+    "react-query": "^2.26.1",
     "turbolinks": "^5.2.0",
     "use-global-hook": "^0.2.1"
   },
