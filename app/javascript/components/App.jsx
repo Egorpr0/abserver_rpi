@@ -11,7 +11,6 @@ import {
   Form,
   InputNumber,
   List,
-  Spin,
 } from "antd";
 import {
   useQuery,
@@ -27,7 +26,6 @@ import { useForm } from "antd/lib/form/Form";
 import { useEffect } from "react";
 
 const { Content } = Layout;
-
 const APIurl = "/api/v1";
 
 const shutterSpeeds = [
@@ -62,7 +60,7 @@ const BasicInfo = () => {
 
 const TaskList = () => {
   const { isLoading, isError, error, data } = useQuery("taskList", () =>
-    fetch(APIurl + "/things")
+    fetch(APIurl + "/tasks")
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
@@ -98,27 +96,52 @@ const NewTask = () => {
   const [exposureTime, setExposureTime] = useState(null);
   const exposuresTotal = exposureTime * exposuresNumber;
 
+  useEffect(() => {
+    form.validateFields();
+  });
+
   return (
     <>
-      <Card title="New task" hoverable>
-        <Form form={form}>
-          <Form.Item noStyle name="taskName">
-            <Input placeholder="Task name" />
+      <Card
+        title="New task"
+        hoverable
+        style={{ width: "100%", height: "100%" }}
+      >
+        <Form
+          form={form}
+          onFinish={(values) => {
+            console.log(values);
+          }}
+        >
+          <Form.Item name="name" style={{ marginBottom: "5px" }}>
+            <Input name="task_name" placeholder="Task name" />
           </Form.Item>
-          <AutoComplete
-            style={{ width: "50%", marginRight: "1%", marginTop: "1%" }}
-            placeholder="Object to track"
-            options={skyObjects}
-            filterOption={(inputValue, option) =>
-              option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !==
-              -1
-            }
-          />
-
-          <Form.Item noStyle name="shutterSpeed">
+          <Form.Item
+            name="tracked_object"
+            rules={[
+              {
+                required: true,
+                message: "Select object that will be tracked",
+              },
+            ]}
+          >
+            <AutoComplete
+              name="tracked_object"
+              placeholder="Object to track"
+              options={skyObjects}
+              filterOption={(inputValue, option) =>
+                option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !==
+                -1
+              }
+            />
+          </Form.Item>
+          <Form.Item
+            name="shutter_speed"
+            style={{ height: "10%", marginBottom: "5px" }}
+          >
             <Select
+              name="shutter_speed"
               placeholder="Shutter speed"
-              style={{ width: "49%", marginTop: "1%" }}
               onChange={(value) => setExposureTime(value)}
             >
               {shutterSpeeds.map((item) => (
@@ -128,40 +151,37 @@ const NewTask = () => {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item noStyle name="exposures">
-            <InputNumber
-              min="1"
-              placeholder="Exposures"
-              style={{ width: "25%", marginTop: "1%" }}
-              onChange={(value) => setExposuresNumber(value)}
-            />
-          </Form.Item>
-
-          <Text
-            type="secondary"
-            style={{ alignSelf: "center", marginLeft: "1%" }}
-          >
-            Total: {Math.floor(exposuresTotal / 60)}m{" "}
-            {exposuresTotal - Math.floor(exposuresTotal / 60) * 60}s
-          </Text>
-
           <Row>
-            <Form.Item noStyle>
+            <Form.Item
+              name="exposures_number"
+              required
+              style={{ width: "33%", marginRight: "auto", marginBottom: "5px" }}
+            >
+              <InputNumber
+                style={{ width: "100%" }}
+                name="exposures_number"
+                min="1"
+                placeholder="Exposures"
+                onChange={(value) => setExposuresNumber(value)}
+              />
+            </Form.Item>
+
+            <Form.Item style={{ width: "33%", marginBottom: "5px" }}>
               <Button
+                style={{ width: "100%" }}
                 type="primary"
                 htmlType="submit"
-                style={{ width: "50%", marginTop: "1%", alignSelf: "end" }}
               >
                 Add
               </Button>
             </Form.Item>
 
-            <Form.Item noStyle>
+            <Form.Item style={{ width: "33%", marginBottom: "5px" }}>
               <Button
+                style={{ width: "100%" }}
                 danger
                 type="primary"
                 htmlType="reset"
-                style={{ width: "50%", marginTop: "1%" }}
                 onClick={() => {
                   form.resetFields(), setExposuresNumber(0), setExposureTime(0);
                 }}
@@ -170,6 +190,15 @@ const NewTask = () => {
               </Button>
             </Form.Item>
           </Row>
+          <Text
+            style={{
+              float: "right",
+              verticalAlign: "center",
+            }}
+          >
+            Total time: {Math.floor(exposuresTotal / 60)}m{" "}
+            {exposuresTotal - Math.floor(exposuresTotal / 60) * 60}s
+          </Text>
         </Form>
       </Card>
     </>
@@ -180,14 +209,13 @@ function Home() {
   return (
     <>
       <Row span="24" gutter={[8, 8]}>
-        <Col span="6"></Col>
-        <Col span="6">
+        <Col span="8">
           <BasicInfo></BasicInfo>
         </Col>
-        <Col span="6">
+        <Col span="8">
           <TaskList></TaskList>
         </Col>
-        <Col span="6">
+        <Col span="8">
           <NewTask />
         </Col>
       </Row>

@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  tracked_object: MyString
+  shutter_speed: 
+  exposures_number: 
+  status: MyString
+
+two:
+  name: MyString
+  tracked_object: MyString
+  shutter_speed: 
+  exposures_number: 
+  status: MyString
