@@ -11,6 +11,7 @@ import {
   Form,
   InputNumber,
   List,
+  Spin,
 } from "antd";
 import {
   useQuery,
@@ -24,6 +25,7 @@ import "antd/dist/antd.css";
 import Text from "antd/lib/typography/Text";
 import { useForm } from "antd/lib/form/Form";
 import { useEffect } from "react";
+import { Link, animateScroll as scroll } from "react-scroll";
 
 const { Content } = Layout;
 const APIurl = "/api/v1";
@@ -83,7 +85,8 @@ const TaskList = () => {
           loading={isLoading}
           bordered
           dataSource={data}
-          renderItem={(item) => <List.Item>{item.title}</List.Item>}
+          style={{ overflow: "auto", height: "200px" }}
+          renderItem={(item) => <List.Item>{item.name}</List.Item>}
         ></List>
       </Card>
     </>
@@ -96,9 +99,7 @@ const NewTask = () => {
   const [exposureTime, setExposureTime] = useState(null);
   const exposuresTotal = exposureTime * exposuresNumber;
 
-  useEffect(() => {
-    form.validateFields();
-  });
+  useEffect(() => {});
 
   return (
     <>
@@ -111,6 +112,20 @@ const NewTask = () => {
           form={form}
           onFinish={(values) => {
             console.log(values);
+            const token = document.querySelector("[name=csrf-token]").content;
+            fetch(APIurl + "/tasks", {
+              method: "POST",
+              mode: "cors",
+              cache: "no-cache",
+              credentials: "same-origin",
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": token,
+              },
+              redirect: "follow",
+              referrerPolicy: "no-referrer",
+              body: JSON.stringify(values),
+            });
           }}
         >
           <Form.Item name="name" style={{ marginBottom: "5px" }}>
@@ -118,6 +133,9 @@ const NewTask = () => {
           </Form.Item>
           <Form.Item
             name="tracked_object"
+            style={{
+              marginBottom: "5px",
+            }}
             rules={[
               {
                 required: true,
@@ -171,6 +189,9 @@ const NewTask = () => {
                 style={{ width: "100%" }}
                 type="primary"
                 htmlType="submit"
+                onClick={() => {
+                  form.validateFields();
+                }}
               >
                 Add
               </Button>
@@ -196,7 +217,7 @@ const NewTask = () => {
               verticalAlign: "center",
             }}
           >
-            Total time: {Math.floor(exposuresTotal / 60)}m{" "}
+            Total exposure time: {Math.floor(exposuresTotal / 60)}m{" "}
             {exposuresTotal - Math.floor(exposuresTotal / 60) * 60}s
           </Text>
         </Form>
