@@ -1,0 +1,15 @@
+.ant-card-body {
+  padding: 5px;
+}
+::-webkit-scrollbar {
+  width: 3px;
+  background: transparent;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(58, 162, 251);
+}

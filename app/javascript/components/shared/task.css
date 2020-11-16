@@ -1,0 +1,37 @@
+.ant-list-item {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  vertical-align: -webkit-baseline-middle;
+  -webkit-box-pack: unset;
+  -ms-flex-pack: unset;
+  justify-content: unset;
+  color: rgba(0, 0, 0, 0.85);
+}
+.tracked-object {
+  width: fit-content;
+  font-weight: 500;
+  vertical-align: middle;
+}
+.task-name {
+  margin-left: 5px;
+  font-size: smaller;
+  text-overflow: ellipsis;
+}
+.exposures-number {
+  align-items: center;
+}
+.shutter-speed {
+  align-items: center;
+}
+.task-status {
+  float: right;
+}
+.task-exposure {
+  align-self: center;
+  align-items: center;
+  -webkit-box-align: center;
+}
