@@ -24,6 +24,5 @@ const lessLoader = {
 environment.loaders.append("less", lessLoader);
 
 environment.config.devServer.contentBase = path.resolve(__dirname, "dist");
-console.log(environment.config.devServer);
 
 module.exports = environment;
