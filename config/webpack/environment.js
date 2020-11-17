@@ -1,4 +1,5 @@
 const { environment } = require("@rails/webpacker");
+const path = require("path");
 
 const lessLoader = {
   test: /\.less$/,
@@ -21,5 +22,8 @@ const lessLoader = {
 };
 
 environment.loaders.append("less", lessLoader);
+
+environment.config.devServer.contentBase = path.resolve(__dirname, "dist");
+console.log(environment.config.devServer);
 
 module.exports = environment;

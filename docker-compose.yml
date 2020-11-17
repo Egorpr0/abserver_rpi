@@ -1,0 +1,37 @@
+version: "3.0"
+services:
+  web:
+    build:
+      context: .
+    command: rails s -b 0.0.0.0
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      - WEBPACKER_DEV_SERVER_HOST=webpacker
+    links:
+      - mariadb
+      - redis
+      - webpacker
+
+  webpacker:
+    build: .
+    environment:
+      - NODE_ENV=development
+      - RAILS_ENV=development
+      - WEBPACKER_DEV_SERVER_HOST=0.0.0.0
+    command: ./smart-telescope-webpacker/bin/webpack-dev-server
+    volumes:
+      - .:/smart-telescope-webpacker
+    ports:
+      - "127.0.0.1:3035:3035"
+
+  mariadb:
+    image: mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+  redis:
+    image: redis
+    restart: always

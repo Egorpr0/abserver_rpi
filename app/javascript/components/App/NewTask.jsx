@@ -47,6 +47,8 @@ const skyObjects = [
   { value: "Wall Street" },
 ];
 
+const APIurl = "/api/v1";
+
 const NewTask = () => {
   const [form] = useForm();
   const [exposuresNumber, setExposuresNumber] = useState(null);
