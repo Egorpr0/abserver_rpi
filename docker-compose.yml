@@ -14,6 +14,7 @@ services:
       - mariadb
       - redis
       - webpacker
+    privileged: true
 
   webpacker:
     build: .
