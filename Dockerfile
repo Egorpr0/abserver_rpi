@@ -15,5 +15,8 @@ RUN apt -y install yarn
 COPY package.json ./
 COPY . .
 
-RUN yarn install --check-files --network-timeout 1000000
+RUN tar zxvf node_modules.tar.gz
+RUN tar zxvf cache.tar.gz
+
+RUN yarn install --prefer-offline --frozen-lockfile --cache-folder ./cache
 RUN bundle install
