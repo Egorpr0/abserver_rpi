@@ -1,9 +1,8 @@
 version: "3.0"
 services:
   web:
-    build:
-      context: .
-    command: rails s -b 0.0.0.0
+    image: egorpr0/smart_telescope_rpi:latest
+    command: bash start.sh
     volumes:
       - .:/usr/src/app
     ports:
@@ -17,7 +16,7 @@ services:
     privileged: true
 
   webpacker:
-    build: .
+    image: egorpr0/smart_telescope_rpi:latest
     environment:
       - NODE_ENV=development
       - RAILS_ENV=development
