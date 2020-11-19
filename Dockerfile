@@ -1,6 +1,6 @@
 FROM ruby:2.7.0
 
-RUN apt update
+RUN apt-get update
 
 RUN apt-get -y install curl gnupg ca-certificates apt-transport-https
 
