@@ -1,6 +1,6 @@
 FROM ruby:2.7.0
 
-RUN apt-get update
+RUN apt update
 
 RUN apt-get -y install curl gnupg ca-certificates apt-transport-https
 
@@ -13,9 +13,7 @@ RUN apt-get update
 RUN apt -y install yarn
 
 COPY package.json ./
-
-RUN yarn install --check-files
-
 COPY . .
 
+RUN yarn install --check-files --network-timeout 1000000
 RUN bundle install
