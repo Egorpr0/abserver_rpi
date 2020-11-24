@@ -1,33 +1,16 @@
 import React, { useState } from "react";
-import {
-  AutoComplete,
-  Button,
-  Card,
-  Col,
-  Input,
-  Layout,
-  Row,
-  Select,
-  Form,
-  InputNumber,
-  List,
-  Spin,
-  Menu,
-  Dropdown,
-  Popconfirm,
-} from "antd";
-import { useQuery, ReactQueryCacheProvider } from "react-query";
+import { Button, List, Menu, Dropdown, Popconfirm, message } from "antd";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { RedoOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import Text from "antd/lib/typography/Text";
-import { useForm } from "antd/lib/form/Form";
-import { useEffect } from "react";
 
 //Styles
 import "antd/dist/antd.css";
 import "../shared/list.css";
 import "../shared/task.css";
-import Paragraph from "antd/lib/skeleton/Paragraph";
+
+const axios = require("axios").default;
+const APIurl = "/api/v1";
 
 const RenderTaskStatus = (status) => {
   //status can be "done", "in_progress", or "error", if something bad happens during execution
@@ -44,8 +27,10 @@ const RenderTaskStatus = (status) => {
   }
 };
 
-const TaskExtraDropdown = (params) => {
-  params = params.params;
+const TaskExtraDropdown = ({ params }) => {
+  const [id, setId] = useState(params.id);
+  const [status, setStatus] = useState(params.status);
+
   return (
     <>
       <Menu>
@@ -54,7 +39,11 @@ const TaskExtraDropdown = (params) => {
             type="default"
             icon={<RedoOutlined />}
             block
-            onClick={() => {}}
+            onClick={() => {
+              axios.delete(APIurl + "/tasks/" + id).then(() => {
+                message.success("Task sucesfully deleted!");
+              });
+            }}
           >
             Redo
           </Button>
@@ -80,7 +69,7 @@ const TaskExtraDropdown = (params) => {
               type="default"
               icon={<DeleteOutlined />}
               block
-              onClick={() => {}}
+              onClick={(id) => {}}
             >
               Delete
             </Button>
@@ -91,9 +80,7 @@ const TaskExtraDropdown = (params) => {
   );
 };
 
-const Task = (taskParams) => {
-  taskParams = taskParams.taskParams;
-
+const Task = ({ taskParams }) => {
   const [id, setId] = useState(taskParams.id);
   const [name, setName] = useState(taskParams.name);
   const [trackedObject, setTrackedObject] = useState(taskParams.tracked_object);

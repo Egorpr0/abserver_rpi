@@ -15,8 +15,8 @@ default: &default
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   username: root
   password: root
-  host: "mariadb"
-
+  host: 127.0.0.1
+  
 development:
   <<: *default
   database: smart_telesope_development

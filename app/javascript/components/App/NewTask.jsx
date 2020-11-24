@@ -14,7 +14,6 @@ import {
   Spin,
   Menu,
 } from "antd";
-import { useQuery, ReactQueryCacheProvider } from "react-query";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import Text from "antd/lib/typography/Text";
 import { useForm } from "antd/lib/form/Form";
@@ -49,7 +48,7 @@ const skyObjects = [
 
 const APIurl = "/api/v1";
 
-const NewTask = () => {
+const NewTask = ({ reload }) => {
   const [form] = useForm();
   const [exposuresNumber, setExposuresNumber] = useState(null);
   const [exposureTime, setExposureTime] = useState(null);
@@ -79,7 +78,7 @@ const NewTask = () => {
               redirect: "follow",
               referrerPolicy: "no-referrer",
               body: JSON.stringify(values),
-            });
+            }).then(reload);
           }}
         >
           <Form.Item name="name" style={{ marginBottom: "5px" }}>

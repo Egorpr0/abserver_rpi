@@ -34,6 +34,7 @@ class Api::V1::TasksController < ApplicationController
   end
   
   def destroy
+    @task = Task.destroy(params[:id])
   end
 
 

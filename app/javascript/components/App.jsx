@@ -1,24 +1,7 @@
 import React, { useState } from "react";
-import {
-  AutoComplete,
-  Button,
-  Card,
-  Col,
-  Input,
-  Layout,
-  Row,
-  Select,
-  Form,
-  InputNumber,
-  List,
-  Spin,
-  Menu,
-} from "antd";
+import { Card, Col, Layout, Row, List } from "antd";
 import { useQuery, ReactQueryCacheProvider } from "react-query";
-import { BsThreeDotsVertical } from "react-icons/bs";
 import Text from "antd/lib/typography/Text";
-import { useForm } from "antd/lib/form/Form";
-import { useEffect } from "react";
 
 //Styles
 import "antd/dist/antd.css";
@@ -29,7 +12,6 @@ import "./shared/task.css";
 import { NewTask } from "./App/NewTask";
 import { Task } from "./App/Task";
 import { ManualControl } from "./ManualControl.jsx";
-
 const { Content } = Layout;
 const APIurl = "/api/v1";
 
@@ -41,16 +23,7 @@ const BasicInfo = () => {
   );
 };
 
-const TaskList = () => {
-  const { isLoading, isError, error, data } = useQuery("taskList", () =>
-    fetch(APIurl + "/tasks")
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        return data;
-      })
-  );
-
+const TaskList = ({ tasks }, { isLoading }) => {
   return (
     <>
       <Card title={<Text>All tasks</Text>} hoverable>
@@ -58,7 +31,7 @@ const TaskList = () => {
           bordered
           size="small"
           loading={isLoading}
-          dataSource={data}
+          dataSource={tasks}
           style={{ overflow: "auto", height: "200px" }}
           renderItem={(task) => {
             return (
@@ -74,6 +47,16 @@ const TaskList = () => {
 };
 
 const Home = () => {
+  const { isLoading, isError, error, data, refetch } = useQuery(
+    "taskList",
+    () =>
+      fetch(APIurl + "/tasks")
+        .then((response) => response.json())
+        .then((data) => {
+          return data;
+        })
+  );
+
   return (
     <>
       <Row span="24" gutter={[8, 8]}>
@@ -81,10 +64,10 @@ const Home = () => {
           <BasicInfo></BasicInfo>
         </Col>
         <Col span="8">
-          <TaskList></TaskList>
+          <TaskList tasks={data} isLoading={isLoading}></TaskList>
         </Col>
         <Col span="8">
-          <NewTask />
+          <NewTask reload={refetch} />
         </Col>
       </Row>
       <Row>

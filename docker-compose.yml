@@ -1,37 +1,41 @@
 version: "3.0"
 services:
-  web:
-    image: egorpr0/smart_telescope_rpi:latest
-    command: bash start.sh
-    volumes:
-      - .:/usr/src/app
-    ports:
-      - "127.0.0.1:3000:3000"
-    environment:
-      - WEBPACKER_DEV_SERVER_HOST=webpacker
-    links:
-      - mariadb
-      - redis
-      - webpacker
-    privileged: true
-
-  webpacker:
-    image: egorpr0/smart_telescope_rpi:latest
-    environment:
-      - NODE_ENV=development
-      - RAILS_ENV=development
-      - WEBPACKER_DEV_SERVER_HOST=0.0.0.0
-    command: ./smart-telescope-webpacker/bin/webpack-dev-server
-    volumes:
-      - .:/smart-telescope-webpacker
-    ports:
-      - "127.0.0.1:3035:3035"
+#  web:
+#    image: egorpr0/smart_telescope_rpi:latest
+#    command: bash start.sh
+#    volumes:
+#      - .:/usr/src/app
+#    ports:
+#      - "127.0.0.1:3000:3000"
+#    environment:
+#      - WEBPACKER_DEV_SERVER_HOST=webpacker
+#    links:
+#      - mariadb
+#      - redis
+#      - webpacker
+#    privileged: true
+#
+#  webpacker:
+#    image: egorpr0/smart_telescope_rpi:latest
+#    environment:
+#      - NODE_ENV=development
+#      - RAILS_ENV=development
+#      - WEBPACKER_DEV_SERVER_HOST=0.0.0.0
+#    command: ./smart-telescope-webpacker/bin/webpack-dev-server
+#    volumes:
+#      - .:/smart-telescope-webpacker
+#    ports:
+#      - "127.0.0.1:3035:3035"
 
   mariadb:
     image: mariadb
     restart: always
+    ports: 
+      - 3306:3306
     environment:
       MYSQL_ROOT_PASSWORD: root
   redis:
     image: redis
+    ports: 
+      - 6379:6379
     restart: always
