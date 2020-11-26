@@ -12,11 +12,6 @@ import {
 import Text from "antd/lib/typography/Text";
 import { useForm } from "antd/lib/form/Form";
 
-//Styles
-import "antd/dist/antd.css";
-import "../shared/list.css";
-import "../shared/task.css";
-
 const shutterSpeeds = [
   { text: "1/4000", value: 0.00025 },
   { text: "1/2000", value: 0.0005 },
@@ -171,4 +166,4 @@ const NewTask = ({ refetchList }) => {
   );
 };
 
-export { NewTask };
+export default NewTask;

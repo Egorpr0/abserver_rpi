@@ -1,9 +1,6 @@
 import React from "react";
 import { Button, Card } from "antd";
 
-//Styles
-import "antd/dist/antd.css";
-
 const APIurl = "/api/v1";
 
 const ManualControl = () => {
@@ -36,4 +33,4 @@ const ManualControl = () => {
   );
 };
 
-export { ManualControl };
+export default ManualControl;

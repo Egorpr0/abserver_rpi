@@ -4,11 +4,6 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { RedoOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import Text from "antd/lib/typography/Text";
 
-//Styles
-import "antd/dist/antd.css";
-import "../../shared/list.css";
-import "../../shared/task.css";
-
 const axios = require("axios").default;
 const APIurl = "/api/v1";
 
@@ -124,4 +119,4 @@ const Task = ({ taskParams, refetchList }) => {
   );
 };
 
-export { Task };
+export default Task;
