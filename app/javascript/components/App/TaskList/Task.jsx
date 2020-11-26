@@ -7,6 +7,8 @@ import Text from "antd/lib/typography/Text";
 const axios = require("axios").default;
 const APIurl = "/api/v1";
 
+import useGlobal from "../../../store/store";
+
 const RenderTaskStatus = (status) => {
   //status can be "done", "in_progress", or "error", if something bad happens during execution
 
@@ -22,9 +24,11 @@ const RenderTaskStatus = (status) => {
   }
 };
 
-const TaskExtraDropdown = ({ params, refetchList }) => {
-  const [id, setId] = useState(params.id);
-  const [status, setStatus] = useState(params.status);
+const TaskExtraDropdown = ({ taskParams }) => {
+  const [globalState, globalActions] = useGlobal();
+
+  const [id, setId] = useState(taskParams.id);
+  const [status, setStatus] = useState(taskParams.status);
 
   return (
     <>
@@ -58,10 +62,12 @@ const TaskExtraDropdown = ({ params, refetchList }) => {
               axios
                 .delete(APIurl + "/tasks/" + id)
                 .then(() => {
-                  refetchList();
                   message.success("Task sucesfully deleted!");
+                  globalActions.removeTask(id);
                 })
                 .catch((err) => {
+                  console.log(err);
+
                   if (err.response.status == 404) {
                     message.error("Task not found, try refreshing the page");
                   } else {
@@ -83,7 +89,7 @@ const TaskExtraDropdown = ({ params, refetchList }) => {
   );
 };
 
-const Task = ({ taskParams, refetchList }) => {
+const Task = ({ taskParams }) => {
   const [id, setId] = useState(taskParams.id);
   const [name, setName] = useState(taskParams.name);
   const [trackedObject, setTrackedObject] = useState(taskParams.tracked_object);
@@ -107,9 +113,7 @@ const Task = ({ taskParams, refetchList }) => {
       />
       <RenderTaskStatus status={status} />
       <Dropdown
-        overlay={
-          <TaskExtraDropdown params={taskParams} refetchList={refetchList} />
-        }
+        overlay={<TaskExtraDropdown taskParams={taskParams} />}
         placement="bottomRight"
         arrow
       >

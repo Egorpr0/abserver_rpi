@@ -1,15 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
+
 import { Card, Col, Layout, Row } from "antd";
 
 //Custom components
 import NewTask from "./App/NewTask";
 import ManualControl from "./App/ManualControl";
 import TaskList from "./App/TaskList";
-import axios from "axios";
-import { useEffect } from "react";
+import useGlobal from "../store/store";
 
 const { Content } = Layout;
-const APIurl = "/api/v1";
 
 const BasicInfo = () => {
   return (
@@ -20,27 +19,11 @@ const BasicInfo = () => {
 };
 
 const Home = () => {
-  const [tasks, setTasks] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [globalState, globalActions] = useGlobal();
 
   useEffect(() => {
-    fetchTaskList();
+    globalActions.fetchTaskList();
   }, []);
-
-  const fetchTaskList = () => {
-    setLoading(true);
-    axios
-      .get(APIurl + "/tasks")
-      .then((response) => response.data)
-      .then((data) => {
-        setTasks(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setLoading(false);
-        console.error(err);
-      });
-  };
 
   return (
     <>
@@ -49,14 +32,10 @@ const Home = () => {
           <BasicInfo></BasicInfo>
         </Col>
         <Col span="8">
-          <TaskList
-            tasks={tasks}
-            isLoading={loading}
-            refetchList={fetchTaskList}
-          />
+          <TaskList />
         </Col>
         <Col span="8">
-          <NewTask refetchList={fetchTaskList} />
+          <NewTask />
         </Col>
       </Row>
       <Row>

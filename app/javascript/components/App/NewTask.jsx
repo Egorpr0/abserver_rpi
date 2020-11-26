@@ -36,8 +36,12 @@ const skyObjects = [
 
 const APIurl = "/api/v1";
 
-const NewTask = ({ refetchList }) => {
+import useGlobal from "../../store/store";
+
+const NewTask = () => {
+  const [globalState, globalActions] = useGlobal();
   const [form] = useForm();
+
   const [exposuresNumber, setExposuresNumber] = useState(null);
   const [exposureTime, setExposureTime] = useState(null);
   const exposuresTotal = exposureTime * exposuresNumber;
@@ -65,7 +69,7 @@ const NewTask = ({ refetchList }) => {
               redirect: "follow",
               referrerPolicy: "no-referrer",
               body: JSON.stringify(values),
-            }).then(() => refetchList());
+            }).then(() => globalActions.fetchTaskList());
           }}
         >
           <Form.Item name="name" style={{ marginBottom: "5px" }}>
