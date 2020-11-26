@@ -3,21 +3,14 @@ import {
   AutoComplete,
   Button,
   Card,
-  Col,
   Input,
-  Layout,
   Row,
   Select,
   Form,
   InputNumber,
-  List,
-  Spin,
-  Menu,
 } from "antd";
-import { BsThreeDotsVertical } from "react-icons/bs";
 import Text from "antd/lib/typography/Text";
 import { useForm } from "antd/lib/form/Form";
-import { useEffect } from "react";
 
 //Styles
 import "antd/dist/antd.css";
@@ -48,7 +41,7 @@ const skyObjects = [
 
 const APIurl = "/api/v1";
 
-const NewTask = ({ reload }) => {
+const NewTask = ({ refetchList }) => {
   const [form] = useForm();
   const [exposuresNumber, setExposuresNumber] = useState(null);
   const [exposureTime, setExposureTime] = useState(null);
@@ -64,7 +57,6 @@ const NewTask = ({ reload }) => {
         <Form
           form={form}
           onFinish={(values) => {
-            console.log(values);
             const token = document.querySelector("[name=csrf-token]").content;
             fetch(APIurl + "/tasks", {
               method: "POST",
@@ -78,7 +70,7 @@ const NewTask = ({ reload }) => {
               redirect: "follow",
               referrerPolicy: "no-referrer",
               body: JSON.stringify(values),
-            }).then(reload);
+            }).then(() => refetchList());
           }}
         >
           <Form.Item name="name" style={{ marginBottom: "5px" }}>

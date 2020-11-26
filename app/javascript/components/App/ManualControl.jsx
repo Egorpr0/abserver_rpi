@@ -1,27 +1,5 @@
-import React, { useState } from "react";
-import {
-  AutoComplete,
-  Button,
-  Card,
-  Col,
-  Input,
-  Layout,
-  Row,
-  Select,
-  Form,
-  InputNumber,
-  List,
-  Spin,
-  Menu,
-  Dropdown,
-  Popconfirm,
-} from "antd";
-import { useQuery, ReactQueryCacheProvider } from "react-query";
-import { BsThreeDotsVertical } from "react-icons/bs";
-import { RedoOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import Text from "antd/lib/typography/Text";
-import { useForm } from "antd/lib/form/Form";
-import { useEffect } from "react";
+import React from "react";
+import { Button, Card } from "antd";
 
 //Styles
 import "antd/dist/antd.css";

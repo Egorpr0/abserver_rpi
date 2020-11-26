@@ -6,8 +6,8 @@ import Text from "antd/lib/typography/Text";
 
 //Styles
 import "antd/dist/antd.css";
-import "../shared/list.css";
-import "../shared/task.css";
+import "../../shared/list.css";
+import "../../shared/task.css";
 
 const axios = require("axios").default;
 const APIurl = "/api/v1";
@@ -27,7 +27,7 @@ const RenderTaskStatus = (status) => {
   }
 };
 
-const TaskExtraDropdown = ({ params }) => {
+const TaskExtraDropdown = ({ params, refetchList }) => {
   const [id, setId] = useState(params.id);
   const [status, setStatus] = useState(params.status);
 
@@ -39,11 +39,7 @@ const TaskExtraDropdown = ({ params }) => {
             type="default"
             icon={<RedoOutlined />}
             block
-            onClick={() => {
-              axios.delete(APIurl + "/tasks/" + id).then(() => {
-                message.success("Task sucesfully deleted!");
-              });
-            }}
+            onClick={() => {}}
           >
             Redo
           </Button>
@@ -63,14 +59,26 @@ const TaskExtraDropdown = ({ params }) => {
             title="Are you sure delete this task?"
             okText="Yes"
             cancelText="No"
+            onConfirm={() => {
+              axios
+                .delete(APIurl + "/tasks/" + id)
+                .then(() => {
+                  refetchList();
+                  message.success("Task sucesfully deleted!");
+                })
+                .catch((err) => {
+                  if (err.response.status == 404) {
+                    message.error("Task not found, try refreshing the page");
+                  } else {
+                    console.log(err);
+                    message.error(
+                      "Something bad happaned, try refreshing the page"
+                    );
+                  }
+                });
+            }}
           >
-            <Button
-              danger
-              type="default"
-              icon={<DeleteOutlined />}
-              block
-              onClick={(id) => {}}
-            >
+            <Button danger type="default" icon={<DeleteOutlined />} block>
               Delete
             </Button>
           </Popconfirm>
@@ -80,7 +88,7 @@ const TaskExtraDropdown = ({ params }) => {
   );
 };
 
-const Task = ({ taskParams }) => {
+const Task = ({ taskParams, refetchList }) => {
   const [id, setId] = useState(taskParams.id);
   const [name, setName] = useState(taskParams.name);
   const [trackedObject, setTrackedObject] = useState(taskParams.tracked_object);
@@ -104,7 +112,9 @@ const Task = ({ taskParams }) => {
       />
       <RenderTaskStatus status={status} />
       <Dropdown
-        overlay={<TaskExtraDropdown params={taskParams} />}
+        overlay={
+          <TaskExtraDropdown params={taskParams} refetchList={refetchList} />
+        }
         placement="bottomRight"
         arrow
       >

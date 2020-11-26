@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import { Card, Col, Layout, Row, List } from "antd";
-import { useQuery, ReactQueryCacheProvider } from "react-query";
-import Text from "antd/lib/typography/Text";
+import { Card, Col, Layout, Row } from "antd";
 
 //Styles
 import "antd/dist/antd.css";
@@ -10,8 +8,10 @@ import "./shared/task.css";
 
 //Custom components
 import { NewTask } from "./App/NewTask";
-import { Task } from "./App/Task";
-import { ManualControl } from "./ManualControl.jsx";
+import { ManualControl } from "./App/ManualControl";
+import { TaskList } from "./App/TaskList";
+import axios from "axios";
+import { useEffect } from "react";
 const { Content } = Layout;
 const APIurl = "/api/v1";
 
@@ -23,39 +23,28 @@ const BasicInfo = () => {
   );
 };
 
-const TaskList = ({ tasks }, { isLoading }) => {
-  return (
-    <>
-      <Card title={<Text>All tasks</Text>} hoverable>
-        <List
-          bordered
-          size="small"
-          loading={isLoading}
-          dataSource={tasks}
-          style={{ overflow: "auto", height: "200px" }}
-          renderItem={(task) => {
-            return (
-              <List.Item>
-                <Task taskParams={task} />
-              </List.Item>
-            );
-          }}
-        ></List>
-      </Card>
-    </>
-  );
-};
-
 const Home = () => {
-  const { isLoading, isError, error, data, refetch } = useQuery(
-    "taskList",
-    () =>
-      fetch(APIurl + "/tasks")
-        .then((response) => response.json())
-        .then((data) => {
-          return data;
-        })
-  );
+  const [tasks, setTasks] = useState();
+  const [loading, setLoading] = useState();
+
+  useEffect(() => {
+    fetchTaskList();
+  }, []);
+
+  const fetchTaskList = () => {
+    setLoading(true);
+    axios
+      .get(APIurl + "/tasks")
+      .then((response) => response.data)
+      .then((data) => {
+        setTasks(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.error(err);
+      });
+  };
 
   return (
     <>
@@ -64,10 +53,14 @@ const Home = () => {
           <BasicInfo></BasicInfo>
         </Col>
         <Col span="8">
-          <TaskList tasks={data} isLoading={isLoading}></TaskList>
+          <TaskList
+            tasks={tasks}
+            isLoading={loading}
+            refetchList={fetchTaskList}
+          />
         </Col>
         <Col span="8">
-          <NewTask reload={refetch} />
+          <NewTask refetchList={fetchTaskList} />
         </Col>
       </Row>
       <Row>
@@ -81,13 +74,11 @@ const Home = () => {
 
 function App() {
   return (
-    <ReactQueryCacheProvider>
-      <Layout className="layout">
-        <Content style={{}}>
-          <Home></Home>
-        </Content>
-      </Layout>
-    </ReactQueryCacheProvider>
+    <Layout className="layout">
+      <Content style={{}}>
+        <Home></Home>
+      </Content>
+    </Layout>
   );
 }
 
