@@ -2,13 +2,7 @@ import React from "react";
 import { Card, List } from "antd";
 import Text from "antd/lib/typography/Text";
 
-//Styles
-import "antd/dist/antd.css";
-import "../shared/list.css";
-import "../shared/task.css";
-
-//Custom components
-import { Task } from "./TaskList/Task";
+import Task from "./TaskList/Task";
 
 const TaskList = ({ tasks, isLoading, refetchList }) => {
   return (
@@ -33,4 +27,4 @@ const TaskList = ({ tasks, isLoading, refetchList }) => {
   );
 };
 
-export { TaskList };
+export default TaskList;

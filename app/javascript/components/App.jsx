@@ -1,17 +1,13 @@
 import React, { useState } from "react";
 import { Card, Col, Layout, Row } from "antd";
 
-//Styles
-import "antd/dist/antd.css";
-import "./shared/list.css";
-import "./shared/task.css";
-
 //Custom components
-import { NewTask } from "./App/NewTask";
-import { ManualControl } from "./App/ManualControl";
-import { TaskList } from "./App/TaskList";
+import NewTask from "./App/NewTask";
+import ManualControl from "./App/ManualControl";
+import TaskList from "./App/TaskList";
 import axios from "axios";
 import { useEffect } from "react";
+
 const { Content } = Layout;
 const APIurl = "/api/v1";
 
@@ -24,8 +20,8 @@ const BasicInfo = () => {
 };
 
 const Home = () => {
-  const [tasks, setTasks] = useState();
-  const [loading, setLoading] = useState();
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchTaskList();
