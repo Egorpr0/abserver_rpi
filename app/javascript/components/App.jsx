@@ -2,6 +2,8 @@ import React, { useEffect } from "react";
 
 import { Card, Col, Layout, Row } from "antd";
 
+import { ActionCableProvider } from 'react-actioncable-provider';
+
 //Custom components
 import NewTask from "./App/NewTask";
 import ManualControl from "./App/ManualControl";
@@ -26,7 +28,7 @@ const Home = () => {
   }, []);
 
   return (
-    <>
+    <div>
       <Row span="24" gutter={[8, 8]}>
         <Col span="8">
           <BasicInfo></BasicInfo>
@@ -40,20 +42,23 @@ const Home = () => {
       </Row>
       <Row>
         <Col span="24" gutter={[8, 8]}>
+
           <ManualControl />
         </Col>
       </Row>
-    </>
+    </div>
   );
 };
 
 function App() {
   return (
-    <Layout className="layout">
-      <Content style={{}}>
-        <Home></Home>
-      </Content>
-    </Layout>
+    <ActionCableProvider url="ws://localhost:3000/api/v1/cable">
+      <Layout className="layout">
+        <Content style={{}}>
+          <Home></Home>
+        </Content>
+      </Layout>
+    </ActionCableProvider>
   );
 }
 

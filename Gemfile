@@ -5,8 +5,14 @@ ruby '2.7.0'
 
 gem 'react-rails'
 
+gem 'redis'
+
+gem 'action_cable_client'
+
+gem 'httparty'
+
 # Gems needed for communicating with arduino
-gem 'uart'
+gem 'serialport'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 6.0.3', '>= 6.0.3.3'

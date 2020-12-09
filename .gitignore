@@ -35,3 +35,5 @@ cache
 node_modules
 /yarn-error.log
 yarn-debug.log*
+
+smart-telescope.sublime-project

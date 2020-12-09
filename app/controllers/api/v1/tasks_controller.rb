@@ -32,7 +32,7 @@ class Api::V1::TasksController < ApplicationController
 
   def update
   end
-  
+
   def destroy
     @task = Task.destroy(params[:id])
   end
