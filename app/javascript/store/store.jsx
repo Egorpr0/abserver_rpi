@@ -7,6 +7,8 @@ const initialState = {
   apiUrl: "/api/v1",
   taskList: [],
   taskListLoading: false,
+
+  serialMessages: [],
 };
 
 const useGlobal = useGlobalHook(React, initialState, actions);

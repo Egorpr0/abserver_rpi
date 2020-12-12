@@ -4,7 +4,7 @@ import Text from "antd/lib/typography/Text";
 import { useForm } from "antd/lib/form/Form";
 import { ActionCableConsumer } from "react-actioncable-provider";
 import axios from "axios";
-import Terminal from "terminal-in-react";
+import SerialConsle from "./TaskList/SerialConsole";
 
 const apiUrl = "/api/v1";
 
@@ -34,6 +34,7 @@ const ManualControl = () => {
         <ActionCableConsumer
           channel="ManualControlChannel"
           onReceived={handleMessage}
+          onSubscribe={() => console.log("ManualControlChannel subscribed!")}
         >
           <Form
             form={form}
@@ -61,24 +62,7 @@ const ManualControl = () => {
           </Form>
         </ActionCableConsumer>
         <Text>{message}</Text>
-        <ActionCableConsumer
-          channel="SerialPortChannel"
-          onReceived={(params) => {
-            console.log(JSON.parse(params).message);
-          }}
-        >
-          <Terminal
-            style={{ float: "right", width: "100%" }}
-            watchConsoleLogging
-            commandPassThrough={(cmd) => {
-              axios.get(apiUrl + "/serial_port", {
-                params: {
-                  message: cmd[0],
-                },
-              });
-            }}
-          />
-        </ActionCableConsumer>
+        <SerialConsle />
       </Card>
     </>
   );

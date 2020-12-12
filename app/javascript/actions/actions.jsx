@@ -24,3 +24,11 @@ export const fetchTaskList = (store) => {
       });
   });
 };
+
+export const addSerialMessage = (store, recievedMessage) => {
+  var old_messages = store.state.serialMessages;
+  old_messages.push(recievedMessage);
+  store.setState({
+    serialMessages: old_messages,
+  });
+};

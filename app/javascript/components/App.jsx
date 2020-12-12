@@ -2,13 +2,17 @@ import React, { useEffect } from "react";
 
 import { Card, Col, Layout, Row } from "antd";
 
-import { ActionCableProvider } from 'react-actioncable-provider';
+import {
+  ActionCableProvider,
+  ActionCableConsumer,
+} from "react-actioncable-provider";
 
 //Custom components
 import NewTask from "./App/NewTask";
 import ManualControl from "./App/ManualControl";
 import TaskList from "./App/TaskList";
 import useGlobal from "../store/store";
+import SerialConsole from "./App/TaskList/SerialConsole";
 
 const { Content } = Layout;
 
@@ -20,6 +24,24 @@ const BasicInfo = () => {
   );
 };
 
+const SerialPortWSClient = () => {
+  const [globalState, globalActions] = useGlobal();
+  return (
+    <ActionCableConsumer
+      channel="SerialPortChannel"
+      onReceived={(params) => {
+        globalActions.addSerialMessage(JSON.parse(params).message);
+      }}
+      onConnected={() => {
+        console.log("WS connected!");
+      }}
+      onDisconnected={() => {
+        console.log("WS disconnected!");
+      }}
+    />
+  );
+};
+
 const Home = () => {
   const [globalState, globalActions] = useGlobal();
 
@@ -28,7 +50,7 @@ const Home = () => {
   }, []);
 
   return (
-    <div>
+    <>
       <Row span="24" gutter={[8, 8]}>
         <Col span="8">
           <BasicInfo></BasicInfo>
@@ -42,15 +64,15 @@ const Home = () => {
       </Row>
       <Row>
         <Col span="24" gutter={[8, 8]}>
-
+          <SerialPortWSClient />
           <ManualControl />
         </Col>
       </Row>
-    </div>
+    </>
   );
 };
 
-function App() {
+const App = () => {
   return (
     <ActionCableProvider url="ws://localhost:3000/api/v1/cable">
       <Layout className="layout">
@@ -60,6 +82,6 @@ function App() {
       </Layout>
     </ActionCableProvider>
   );
-}
+};
 
 export default App;
