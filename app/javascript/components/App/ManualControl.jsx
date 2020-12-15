@@ -34,7 +34,12 @@ const ManualControl = () => {
         <ActionCableConsumer
           channel="ManualControlChannel"
           onReceived={handleMessage}
-          onSubscribe={() => console.log("ManualControlChannel subscribed!")}
+          onConnected={() => {
+            console.log("ManualControlChannel connected!");
+          }}
+          onDisconnected={() => {
+            console.log("ManualControlChannel disconnected!");
+          }}
         >
           <Form
             form={form}

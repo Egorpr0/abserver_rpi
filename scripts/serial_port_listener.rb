@@ -7,13 +7,13 @@ require 'byebug'
 
 sleep(3)
 
-serial = SerialPort.new("/dev/ttyUSB0", 9600, )
+serial = SerialPort.new("/dev/ttyUSB0", 115200, )
 
 send = Thread.new do
   @redis = Redis.new
   @redis.subscribe('serial-port') do |on|
     on.message do |channel, msg|
-      serial.write msg
+      serial.write msg + " "
     end
   end
 end

@@ -33,10 +33,10 @@ const SerialPortWSClient = () => {
         globalActions.addSerialMessage(JSON.parse(params).message);
       }}
       onConnected={() => {
-        console.log("WS connected!");
+        console.log("SerialPortChannel connected!");
       }}
       onDisconnected={() => {
-        console.log("WS disconnected!");
+        console.log("SerialPortChannel disconnected!");
       }}
     />
   );
