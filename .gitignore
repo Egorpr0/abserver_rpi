@@ -37,3 +37,4 @@ node_modules
 yarn-debug.log*
 
 smart-telescope.sublime-project
+.vscode/settings.json
