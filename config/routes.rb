@@ -3,7 +3,12 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       mount ActionCable.server => '/cable'
-      resources :tasks
+      resources :tasks do
+        get 'execute' => 'tasks#execute'
+        get 'status' => 'tasks#status'
+        get 'terminate' => 'tasks#terminate'
+      end
+      resources :current_tasks
       post '/manual_control' => 'manual_control#rotate'
 
       post '/serial_port' => 'serial_port#send_message'

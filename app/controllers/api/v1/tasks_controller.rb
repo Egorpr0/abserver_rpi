@@ -7,9 +7,13 @@ class Api::V1::TasksController < ApplicationController
   end
 
   def show
-    @task = Task.find(id: params[:id])
+    @task = Task.find(params[:id])
 
     render json: @task.to_json
+  end
+
+  def execute
+    byebug
   end
 
   def edit
@@ -31,11 +35,10 @@ class Api::V1::TasksController < ApplicationController
   end
 
   def update
+
   end
 
   def destroy
     @task = Task.destroy(params[:id])
   end
-
-
 end

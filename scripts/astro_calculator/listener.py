@@ -2,6 +2,7 @@ import json
 import redis
 import time
 import skyfield
+import requests
 from skyfield.api import Loader
 import pdb
 
@@ -44,8 +45,11 @@ def main():
             + str(distance)
             + '"}'
         )
-
-        connection.publish("astro_calculator_return", data)
+        id = 0
+        url = f"http://localhost:3000/api/v1/tasks/{id}/"
+        requests.put(
+            url, data={"ra": str(ra), "dec": str(dec)}
+        )  # TODO add total time parameter
 
 
 main()
