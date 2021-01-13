@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Button, Card, Form, InputNumber, Row } from "antd";
 import Text from "antd/lib/typography/Text";
 import { useForm } from "antd/lib/form/Form";
-import { ActionCableConsumer } from "react-actioncable-provider";
 import axios from "axios";
 import SerialConsle from "./TaskList/SerialConsole";
 
@@ -11,7 +10,7 @@ const apiUrl = "/api/v1";
 import useGlobal from "../../store/store";
 
 const ManualControl = () => {
-  const [globalState] = useGlobal();
+  const [globalState, globalActions] = useGlobal();
   const [form] = useForm();
 
   const [message, setMessage] = useState();
@@ -22,7 +21,19 @@ const ManualControl = () => {
     console.log(props.message);
   };
 
-  var t0;
+  useEffect(() => {
+    globalState.cableConnection.subscriptions.create("ManualControlChannel", {
+      received: (params) => {
+        handleMessage(params);
+      },
+      connected: () => {
+        console.log("ManualControlChannel connected!");
+      },
+      disconnected: () => {
+        console.log("ManualControlChannel disconnected!");
+      },
+    });
+  }, []);
 
   return (
     <>
@@ -31,41 +42,30 @@ const ManualControl = () => {
         hoverable
         style={{ width: "100%", height: "100%" }}
       >
-        <ActionCableConsumer
-          channel="ManualControlChannel"
-          onReceived={handleMessage}
-          onConnected={() => {
-            console.log("ManualControlChannel connected!");
-          }}
-          onDisconnected={() => {
-            console.log("ManualControlChannel disconnected!");
-          }}
+        <Form
+          form={form}
+          onFinish={(values) =>
+            axios
+              .post("/api/v1/manual_control?steps=" + values.steps)
+              .catch(() => console.log(error))
+          }
         >
-          <Form
-            form={form}
-            onFinish={(values) =>
-              axios
-                .post("/api/v1/manual_control?steps=" + values.steps)
-                .catch(() => console.log(error))
-            }
-          >
-            <Row>
-              <Form.Item name="steps">
-                <InputNumber />
-              </Form.Item>
+          <Row>
+            <Form.Item name="steps">
+              <InputNumber />
+            </Form.Item>
 
-              <Form.Item>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  style={{ marginLeft: "10px" }}
-                >
-                  submit
-                </Button>
-              </Form.Item>
-            </Row>
-          </Form>
-        </ActionCableConsumer>
+            <Form.Item>
+              <Button
+                type="primary"
+                htmlType="submit"
+                style={{ marginLeft: "10px" }}
+              >
+                submit
+              </Button>
+            </Form.Item>
+          </Row>
+        </Form>
         <Text>{message}</Text>
         <SerialConsle />
       </Card>

@@ -9,6 +9,9 @@
 
 .gitignore
 .browserslistrc
+.ruby-version
+.browserslistrc
+.gitignore
 # Ignore all logfiles and tempfiles.
 /log/*
 /tmp/*

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, Text, List, Input, message } from "antd";
 import { CaretUpOutlined } from "@ant-design/icons";
 import Axios from "axios";
@@ -18,6 +18,20 @@ const SerialConsole = () => {
       message.success("Message sent!")
     );
   };
+
+  useEffect(() => {
+    globalState.cableConnection.subscriptions.create("SerialPortChannel", {
+      recieved: () => {
+        globalActions.addSerialMessage(JSON.parse(params).message);
+      },
+      connected: () => {
+        console.log("SerialPortChannel connected!");
+      },
+      disconnected: () => {
+        console.log("SerialPortChannel disconnected!");
+      },
+    });
+  }, []);
 
   return (
     <>

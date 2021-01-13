@@ -13,7 +13,7 @@ class Api::V1::TasksController < ApplicationController
   end
 
   def execute
-    byebug
+    ExecuteTaskJob.perform_later(params[:task_id])
   end
 
   def edit

@@ -3,7 +3,7 @@ class Api::V1::ManualControlController < ApplicationController
 
   def rotate
     ActionCable.server.broadcast 'manual_control_channel', {
-      message: "Nice",
+      message: "Nice #{params[:steps]}",
       head: "ok"
     }
   end

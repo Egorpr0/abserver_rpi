@@ -9,6 +9,24 @@ import useGlobal from "../../store/store";
 const TaskList = () => {
   const [globalState, globalActions] = useGlobal();
 
+  const handleMessage = (message) => {
+    console.log(message);
+  };
+
+  useEffect(() => {
+    globalState.cableConnection.subscriptions.create("TasksUpdatesChannel", {
+      received: (props) => {
+        handleMessage(props);
+      },
+      connected: () => {
+        console.log("TasksUpdateChannel connected!");
+      },
+      disconnected: () => {
+        console.log("TasksUpdateChannel disconnected!");
+      },
+    });
+  }, []);
+
   return (
     <>
       <Card title={<Text>All tasks</Text>} hoverable>
