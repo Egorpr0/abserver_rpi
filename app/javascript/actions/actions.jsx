@@ -32,3 +32,9 @@ export const addSerialMessage = (store, recievedMessage) => {
     serialMessages: old_messages,
   });
 };
+
+//export const setCableConnection = (store, cableConnection) => {
+//  store.setState({
+//    cableConnection: cableConnection,
+//  });
+//};

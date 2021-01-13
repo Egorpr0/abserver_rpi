@@ -7,6 +7,11 @@
 # Ignore bundler config.
 /.bundle
 
+.gitignore
+.browserslistrc
+.ruby-version
+.browserslistrc
+.gitignore
 # Ignore all logfiles and tempfiles.
 /log/*
 /tmp/*
@@ -37,3 +42,4 @@ node_modules
 yarn-debug.log*
 
 smart-telescope.sublime-project
+.vscode

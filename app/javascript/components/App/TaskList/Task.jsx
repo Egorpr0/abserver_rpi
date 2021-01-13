@@ -9,12 +9,16 @@ const APIurl = "/api/v1";
 
 import useGlobal from "../../../store/store";
 
-const RenderTaskStatus = (status) => {
+const RenderTaskStatus = ({ status }) => {
   //status can be "done", "in_progress", or "error", if something bad happens during execution
 
-  switch (status.status) {
+  switch (status) {
+    case "added":
+      return <Text style={{ color: "grey" }}>New</Text>;
     case "done":
       return <Text type="success">Done</Text>;
+    case "processing":
+      return <Text style={{ color: "green" }}>Processing...</Text>;
     case "in_progress":
       return <Text style={{ color: "#379FF9" }}>In progress...</Text>;
     case "error":

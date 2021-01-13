@@ -1,6 +1,8 @@
 Rails.application.configure do
-  # Settings specified here will take precedence over those in config/application.rb.
+  #enable redis caching
+  config.cache_store = :redis_cache_store, { url: "redis://localhost:6379/0" }
 
+  # Settings specified here will take precedence over those in config/application.rb.
   # Code is not reloaded between requests.
   config.cache_classes = true
 
