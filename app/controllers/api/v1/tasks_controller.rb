@@ -29,6 +29,7 @@ class Api::V1::TasksController < ApplicationController
 
     if @task.save
       puts "Task saved with:" + params.to_s
+      ActionCable.server.broadcast 'tasks_update_channel', task: @task.to_json, action: "add"
     else
       puts "Task NOT saved with:" + params.to_s
     end
@@ -39,6 +40,8 @@ class Api::V1::TasksController < ApplicationController
   end
 
   def destroy
-    @task = Task.destroy(params[:id])
+    if @task = Task.destroy(params[:id])
+      ActionCable.server.broadcast 'tasks_update_channel', task: @task.to_json, action: "delete"
+    end
   end
 end
