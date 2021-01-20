@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-
+import { ActionCableProvider } from "react-actioncable-provider";
 import { Card, Col, Layout, Row } from "antd";
 
 //Custom components
 import NewTask from "./App/NewTask";
 import ManualControl from "./App/ManualControl";
 import TaskList from "./App/TaskList";
-import useGlobal from "../store/store";
+import useGlobal from "../stores/globalStateStore";
 
 const { Content } = Layout;
 
@@ -19,12 +19,6 @@ const BasicInfo = () => {
 };
 
 const Home = () => {
-  const [globalState, globalActions] = useGlobal();
-
-  useEffect(() => {
-    globalActions.fetchTaskList();
-  }, []);
-
   return (
     <>
       <Row span="24" gutter={[8, 8]}>
@@ -48,13 +42,17 @@ const Home = () => {
 };
 
 const App = () => {
+  const [globalState] = useGlobal();
   return (
     <>
-      <Layout className="layout">
-        <Content style={{}}>
-          <Home></Home>
-        </Content>
-      </Layout>
+      <ActionCableProvider cable={globalState.cableConnection}>
+        <Layout className="layout">
+          <Content style={{}}>
+            <Home></Home>
+          </Content>
+        </Layout>
+      </ActionCableProvider>
+      ;
     </>
   );
 };

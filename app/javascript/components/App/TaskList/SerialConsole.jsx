@@ -4,7 +4,7 @@ import { CaretUpOutlined } from "@ant-design/icons";
 import Axios from "axios";
 import { FixedSizeList as list } from "react-window";
 
-import useGlobal from "../../../store/store";
+import useGlobal from "../../../stores/globalStateStore";
 
 const apiUrl = "/api/v1";
 
@@ -14,9 +14,7 @@ const SerialConsole = () => {
   const [globalState, globalActions] = useGlobal();
 
   const handleSubmit = (data) => {
-    Axios.get(apiUrl + "/serial_port", { params: { message: data } }).then(
-      message.success("Message sent!")
-    );
+    Axios.get(apiUrl + "/serial_port", { params: { message: data } }).then(message.success("Message sent!"));
   };
 
   useEffect(() => {
@@ -47,11 +45,7 @@ const SerialConsole = () => {
           dataSource={globalState.serialMessages}
           renderItem={(message) => <List.Item>{message}</List.Item>}
         />
-        <Search
-          placeholder="Your message:"
-          onSearch={(data) => handleSubmit(data)}
-          enterButton={<CaretUpOutlined />}
-        />
+        <Search placeholder="Your message:" onSearch={(data) => handleSubmit(data)} enterButton={<CaretUpOutlined />} />
       </div>
     </>
   );

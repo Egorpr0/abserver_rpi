@@ -1,16 +1,8 @@
-import React, { useState } from "react";
-import {
-  AutoComplete,
-  Button,
-  Card,
-  Input,
-  Row,
-  Select,
-  Form,
-  InputNumber,
-} from "antd";
+import React, { useState, useContext } from "react";
+import { AutoComplete, Button, Card, Input, Row, Select, Form, InputNumber } from "antd";
 import Text from "antd/lib/typography/Text";
 import { useForm } from "antd/lib/form/Form";
+import { TaskList } from "./TaskList";
 
 const shutterSpeeds = [
   { text: "1/4000", value: 0.00025 },
@@ -28,15 +20,11 @@ const shutterSpeeds = [
   { text: "30'", value: 30 },
 ];
 
-const skyObjects = [
-  { value: "Burns Bay Road" },
-  { value: "Downing Street" },
-  { value: "Wall Street" },
-];
+const skyObjects = [{ value: "Burns Bay Road" }, { value: "Downing Street" }, { value: "Wall Street" }];
 
 const APIurl = "/api/v1";
 
-import useGlobal from "../../store/store";
+import useGlobal from "../../stores/globalStateStore";
 
 const NewTask = () => {
   const [globalState, globalActions] = useGlobal();
@@ -48,11 +36,7 @@ const NewTask = () => {
 
   return (
     <>
-      <Card
-        title="New task"
-        hoverable
-        style={{ width: "100%", height: "100%" }}
-      >
+      <Card title="New task" hoverable style={{ width: "100%", height: "100%" }}>
         <Form
           form={form}
           onFinish={(values) => {
@@ -69,7 +53,7 @@ const NewTask = () => {
               redirect: "follow",
               referrerPolicy: "no-referrer",
               body: JSON.stringify(values),
-            }).then(() => globalActions.fetchTaskList());
+            });
           }}
         >
           <Form.Item name="name" style={{ marginBottom: "5px" }}>
@@ -91,21 +75,11 @@ const NewTask = () => {
               name="tracked_object"
               placeholder="Object to track"
               options={skyObjects}
-              filterOption={(inputValue, option) =>
-                option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !==
-                -1
-              }
+              filterOption={(inputValue, option) => option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
             />
           </Form.Item>
-          <Form.Item
-            name="shutter_speed"
-            style={{ height: "10%", marginBottom: "5px" }}
-          >
-            <Select
-              name="shutter_speed"
-              placeholder="Shutter speed"
-              onChange={(value) => setExposureTime(value)}
-            >
+          <Form.Item name="shutter_speed" style={{ height: "10%", marginBottom: "5px" }}>
+            <Select name="shutter_speed" placeholder="Shutter speed" onChange={(value) => setExposureTime(value)}>
               {shutterSpeeds.map((item) => (
                 <Select.Option key={item.text} value={item.value}>
                   {item.text}

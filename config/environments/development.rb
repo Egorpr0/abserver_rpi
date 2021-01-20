@@ -1,4 +1,6 @@
 Rails.application.configure do
+  config.hosts << "ffebef47ee0f.ngrok.io"
+  
   config.web_console.whiny_requests = false
 
   # Settings specified here will take precedence over those in config/application.rb.
