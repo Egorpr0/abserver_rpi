@@ -1,5 +1,4 @@
 Rails.application.configure do
-  config.hosts << "ffebef47ee0f.ngrok.io"
   
   config.web_console.whiny_requests = false
 

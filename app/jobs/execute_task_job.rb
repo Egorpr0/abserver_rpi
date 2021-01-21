@@ -3,15 +3,19 @@ class ExecuteTaskJob < ApplicationJob
 
   def perform(task_id)
     task = Task.find(task_id)
-    task.status = 0
+    progress = 0;
+    ActionCable.server.broadcast 'tasks_update_channel', taskId: task.id, action: "update", parameter: "status.state", value: "in_progress"
     10.times do
-      # puts task.status
-      task.status = task.status.to_i + 10
-      # puts task.status
-      ActionCable.server.broadcast 'tasks_update_channel', task: task.to_json.to_s, action: "update"
       sleep(1)
+      progress += 10
+      ActionCable.server.broadcast 'tasks_update_channel', taskId: task.id, action: "update", parameter: "status.progress", value: progress.to_s
     end
-    task.status = "added"
-    ActionCable.server.broadcast 'tasks_update_channel', task: task.to_json.to_s, action: "update"
+    ActionCable.server.broadcast 'tasks_update_channel', taskId: task.id, action: "update", parameter: "status.state", value: "completed"
+    ActionCable.server.broadcast 'tasks_update_channel', taskId: task.id, action: "update", parameter: "status.progress", value: "0"
+    task.status = {"state" => "completed", "progress" => "0", "last_executed" => ""}.to_json
+    task.save
+
+
+    # Build parser on fromntend
   end
 end

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Button, List, Menu, Dropdown, Popconfirm, message } from "antd";
+import { Button, List, Menu, Dropdown, Popconfirm, message, Progress } from "antd";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { RedoOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { RedoOutlined, EditOutlined, DeleteOutlined, PlayCircleOutlined } from "@ant-design/icons";
 import Text from "antd/lib/typography/Text";
 import { ActionCableConsumer } from "react-actioncable-provider";
 import axios from "axios";
@@ -10,10 +10,9 @@ const APIurl = "/api/v1";
 
 import useGlobal from "../../../stores/globalStateStore";
 
-const RenderTaskStatus = ({ status }) => {
-  //status can be "done", "in_progress", or "error", if something bad happens during execution
-
-  switch (status) {
+const RenderTaskStatus = (state) => {
+  //What is happening with the state!!!
+  switch (state.state) {
     case "added":
       return <Text style={{ color: "grey" }}>New</Text>;
     case "done":
@@ -21,11 +20,11 @@ const RenderTaskStatus = ({ status }) => {
     case "processing":
       return <Text style={{ color: "green" }}>Processing...</Text>;
     case "in_progress":
-      return <Text style={{ color: "#379FF9" }}>In progress...</Text>;
+      return <Progress percent={state.progress} size="small" style={{ width: 100 }} />;
     case "error":
       return <Text type="danger">Error!</Text>;
     default:
-      return <span>{status}</span>;
+      return <span></span>;
   }
 };
 
@@ -82,6 +81,7 @@ const TaskExtraDropdown = ({ taskParams }) => {
 };
 
 const Task = ({ taskParams }) => {
+  var taskStatus = JSON.parse(taskParams.status);
   const [globalState, globalActions] = useGlobal();
 
   const [id, setId] = useState(taskParams.id);
@@ -89,18 +89,57 @@ const Task = ({ taskParams }) => {
   const [trackedObject, setTrackedObject] = useState(taskParams.tracked_object);
   const [shutterSpeed, setShutterSpeed] = useState(taskParams.shutter_speed);
   const [exposuresNumber, setExposuresNumber] = useState(taskParams.exposures_number);
-  const [status, setStatus] = useState(taskParams.status);
+  const [statusState, setStatusState] = useState(taskStatus.state);
+  const [statusProgress, setStatusProgress] = useState();
+  const [statusLastExecuted, setStatusLastExecuted] = useState(taskStatus.last_executed);
+
+  useEffect(() => {
+    console.log(statusProgress);
+  }, [statusProgress]);
 
   useEffect(() => {
     globalState.cableConnection.subscriptions.create("TasksUpdatesChannel", {
       received: (message) => {
-        var changedTask = JSON.parse(message.task);
-        if (id == changedTask.id) {
-          setName(changedTask.name);
-          setTrackedObject(changedTask.tracked_object);
-          setShutterSpeed(changedTask.shutterSpeed);
-          setExposuresNumber(changedTask.exposuresNumber);
-          setStatus(changedTask.status);
+        if (message.taskId == id) {
+          var changedInfo = message.parameter.split(".");
+          switch (
+            changedInfo[0] // Parse and change value, that is recieved
+          ) {
+            case "name":
+              setName(message.value);
+              break;
+            case "tacked_object":
+              setTrackedObject(message.value);
+              break;
+
+            case "shutter_speed":
+              setShutterSpeed(message.value);
+              break;
+
+            case "exposures_number":
+              setExposuresNumber(message.value);
+              break;
+
+            case "status":
+              switch (changedInfo[1]) {
+                case "state":
+                  setStatusState(message.value);
+                  break;
+
+                case "progress":
+                  setStatusProgress(parseInt(message.value)); //NOT OK
+                  break;
+
+                case "last_executed":
+                  setStatusLastExecuted(message.value);
+                  break;
+                default:
+                  break;
+              }
+              break;
+            default:
+              break;
+          }
         }
       },
       connected: () => {
@@ -123,7 +162,18 @@ const Task = ({ taskParams }) => {
         }
         description={trackedObject}
       />
-      <RenderTaskStatus status={status} />
+      <RenderTaskStatus state={statusState} progress={statusProgress} lastExecuted={statusLastExecuted} />
+      <Button
+        onClick={() => {
+          console.log("clicked");
+          axios.post("/api/v1/tasks/" + taskParams.id + "/execute");
+        }}
+        shape="circle"
+        type="text"
+        size="middle"
+        style={{ marginLeft: 10 }}
+        icon={<PlayCircleOutlined />}
+      />
       <Dropdown overlay={<TaskExtraDropdown taskParams={taskParams} />} placement="bottomRight" arrow>
         <Button type="text" shape="circle" icon={<BsThreeDotsVertical />} />
       </Dropdown>

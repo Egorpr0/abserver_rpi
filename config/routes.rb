@@ -4,7 +4,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       mount ActionCable.server => '/cable'
       resources :tasks do
-        get 'execute' => 'tasks#execute'
+        post 'execute' => 'tasks#execute'
         get 'status' => 'tasks#status'
         get 'terminate' => 'tasks#terminate'
       end

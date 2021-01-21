@@ -25,11 +25,11 @@ class Api::V1::TasksController < ApplicationController
     @task.tracked_object = params[:tracked_object]
     @task.shutter_speed = params[:shutter_speed]
     @task.exposures_number = params[:exposures_number].to_i
-    @task.status = "added"
+    @task.status = {"state" => "added", "progress" => "0", "last_executed" => ""}.to_json
 
     if @task.save
       puts "Task saved with:" + params.to_s
-      ActionCable.server.broadcast 'tasks_update_channel', task: @task.to_json, action: "add"
+      ActionCable.server.broadcast 'tasks_update_channel', action: "add", parameter: "task", value: @task.to_json
     else
       puts "Task NOT saved with:" + params.to_s
     end
@@ -41,7 +41,7 @@ class Api::V1::TasksController < ApplicationController
 
   def destroy
     if @task = Task.destroy(params[:id])
-      ActionCable.server.broadcast 'tasks_update_channel', task: @task.to_json, action: "delete"
+      ActionCable.server.broadcast 'tasks_update_channel', action: "delete", parameter: "task", value: @task.to_json
     end
   end
 end

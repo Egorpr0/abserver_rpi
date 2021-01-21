@@ -29,20 +29,12 @@ const TaskList = () => {
 
   const updateTaskList = async (action, changedTask) => {
     switch (action) {
-      case "update":
-        var taskId = await taskList.findIndex((task) => {
-          return task.id == changedTask.id;
-        });
-        var oldTaskList = taskList.concat();
-        oldTaskList[taskId] = changedTask;
-        setTaskList(oldTaskList);
-        break;
       case "delete":
         var oldTaskList = taskList;
         var taskIndex = oldTaskList.findIndex((task) => {
           return task.id == changedTask.id;
         });
-        if (taskIndex >= 0) {
+        if (taskIndex > -1) {
           oldTaskList.splice(taskIndex, 1);
           setTaskList([]); // TODO fix rerendering task list
           setTaskList(oldTaskList);
@@ -64,8 +56,10 @@ const TaskList = () => {
         <ActionCableConsumer
           channel="TasksUpdatesChannel"
           onReceived={(message) => {
-            var changedTask = JSON.parse(message.task);
-            updateTaskList(message.action, changedTask);
+            if (message.action == "add" || message.action == "delete") {
+              var changedTask = JSON.parse(message.value);
+              updateTaskList(message.action, changedTask);
+            }
           }}
           onConnected={() => {
             console.log("TasksUpdateChannel connected!");
