@@ -19,8 +19,10 @@ const SerialConsole = () => {
 
   useEffect(() => {
     globalState.cableConnection.subscriptions.create("SerialPortChannel", {
-      recieved: () => {
-        globalActions.addSerialMessage(JSON.parse(params).message);
+      received: (message) => {
+        console.log("1234");
+        debugger;
+        globalActions.addSerialMessage(JSON.parse(message).message);
       },
       connected: () => {
         console.log("SerialPortChannel connected!");

@@ -40,19 +40,22 @@ while True:
         if (message["data"].decode("utf-8")) == "stop":
             print("Execution stopped with redis message from server")
             break
-    print(random(), end="\r")  # only for testing purposes for better battery life
-    redis.publish("serial-port", str(random()))
 
-    # currentTime = timescale.now()
-    # astrometric = place.at(currentTime).observe(trackedObject)
-    # alt, az, d = astrometric.apparent().altaz()
-    # time2 = timescale.now()
     # print(
-    # str(alt)
-    # + "  "
-    # + str(az)
-    # + " execution time: "
-    # + str((time2 - currentTime) * 1000),
-    # end="\r",
-    # )
+    #     random(), end="\r"
+    # )  # only for testing purposes and better battery life while testing
+
+    currentTime = timescale.now()
+    astrometric = place.at(currentTime).observe(trackedObject)
+    alt, az, d = astrometric.apparent().altaz()
+    time2 = timescale.now()
+    print(
+        str(alt)
+        + "  "
+        + str(az)
+        + " execution time: "
+        + str((time2 - currentTime) * 1000),
+        end="\r",
+    )
+    redis.publish("serial-port", {"alt": alt, "az": az})
     time.sleep(1)

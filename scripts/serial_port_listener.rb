@@ -14,6 +14,7 @@ send = Thread.new do
   @redis.subscribe('serial-port') do |on|
     on.message do |channel, msg|
       serial.write(msg + " ")
+      HTTParty.post('http://127.0.0.1:3000/api/v1/serial_port', body: {'message': msg})
     end
   end
 end
@@ -24,7 +25,7 @@ recieve = Thread.new do
   loop do
     serial.wait_readable
     input = serial.readline.chop
-    response = HTTParty.post('http://127.0.0.1:3000/api/v1/serial_port', body: {'message': input})
+    HTTParty.post('http://127.0.0.1:3000/api/v1/serial_port', body: {'message': input})
   end
 end
 

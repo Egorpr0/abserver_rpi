@@ -1,6 +1,3 @@
-import { useReducer } from "react";
-import axios from "axios";
-
 export const removeTask = (store, excludingTask) => {
   store.setState({ taskListLoading: true });
   const reducedArray = store.state.taskList.slice(0).filter((task) => task.id !== excludingTask);
