@@ -18,7 +18,6 @@ redis = redis.Redis(host="localhost", port=6379)
 pubsub = redis.pubsub(ignore_subscribe_messages=True)
 pubsub.subscribe("astro_calculator")
 
-
 # loading all nedeed info for astro calculations
 timescale = load.timescale()
 planets = load("de421.bsp")
@@ -41,21 +40,17 @@ while True:
             print("Execution stopped with redis message from server")
             break
 
-    # print(
-    #     random(), end="\r"
-    # )  # only for testing purposes and better battery life while testing
-
     currentTime = timescale.now()
     astrometric = place.at(currentTime).observe(trackedObject)
-    alt, az, d = astrometric.apparent().altaz()
+    ha, dec, distance = astrometric.apparent().hadec()
     time2 = timescale.now()
     print(
-        str(alt)
+        str(ha)
         + "  "
-        + str(az)
-        + " execution time: "
+        + str(dec)
+        + " calculation time: "
         + str((time2 - currentTime) * 1000),
         end="\r",
     )
-    redis.publish("serial-port", {"alt": alt, "az": az})
-    time.sleep(1)
+    redis.publish("serial-port", {"n": "moveTo", "p": {"ha": ha, "dec": dec}})
+    time.sleep(0.5)

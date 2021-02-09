@@ -13,15 +13,9 @@ const { Search } = Input;
 const SerialConsole = () => {
   const [globalState, globalActions] = useGlobal();
 
-  const handleSubmit = (data) => {
-    Axios.get(apiUrl + "/serial_port", { params: { message: data } }).then(message.success("Message sent!"));
-  };
-
   useEffect(() => {
     globalState.cableConnection.subscriptions.create("SerialPortChannel", {
       received: (message) => {
-        console.log("1234");
-        debugger;
         globalActions.addSerialMessage(JSON.parse(message).message);
       },
       connected: () => {
@@ -47,7 +41,11 @@ const SerialConsole = () => {
           dataSource={globalState.serialMessages}
           renderItem={(message) => <List.Item>{message}</List.Item>}
         />
-        <Search placeholder="Your message:" onSearch={(data) => handleSubmit(data)} enterButton={<CaretUpOutlined />} />
+        <Search
+          placeholder="Your message:"
+          onSearch={(data) => globalActions.sendSerialMessage(data)}
+          enterButton={<CaretUpOutlined />}
+        />
       </div>
     </>
   );

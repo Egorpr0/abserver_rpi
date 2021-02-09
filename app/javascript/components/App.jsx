@@ -6,24 +6,17 @@ import { Card, Col, Layout, Row } from "antd";
 import NewTask from "./App/NewTask";
 import ManualControl from "./App/ManualControl";
 import TaskList from "./App/TaskList";
+import InfoCard from "./App/InfoCard";
 import useGlobal from "../stores/globalStateStore";
 
 const { Content } = Layout;
-
-const BasicInfo = () => {
-  return (
-    <Card title="Info" hoverable="true">
-      Basic info
-    </Card>
-  );
-};
 
 const Home = () => {
   return (
     <>
       <Row span="24" gutter={[8, 8]}>
         <Col span="8">
-          <BasicInfo></BasicInfo>
+          <InfoCard />
         </Col>
         <Col span="8">
           <TaskList />

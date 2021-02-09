@@ -12,7 +12,7 @@ Rails.application.routes.draw do
       post '/manual_control' => 'manual_control#rotate'
 
       post '/serial_port' => 'serial_port#send_message'
-      get '/serial_port' => 'serial_port#recieve'
+      get '/serial_port' => 'serial_port#receive_message'
     end
   end
 

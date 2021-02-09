@@ -5,6 +5,14 @@ import ActionCable from "actioncable";
 import * as actions from "../actions/actions";
 
 const initialState = {
+  arduino: {
+    status: "test1",
+    connected: true,
+    port: "/dev/ttyUSB0",
+    connectionSpeed: "115200",
+    stepperHaDeg: 0,
+    stepperDecDeg: 0,
+  },
   APIurl: "/api/v1",
   taskList: [],
   taskListLoading: false,

@@ -13,19 +13,25 @@ send = Thread.new do
   @redis = Redis.new
   @redis.subscribe('serial-port') do |on|
     on.message do |channel, msg|
-      serial.write(msg + " ")
-      HTTParty.post('http://127.0.0.1:3000/api/v1/serial_port', body: {'message': msg})
+      serial.write(msg)
     end
   end
 end
 
 recieve = Thread.new do
-  @redis = Redis.new
-  buffer = ""
   loop do
     serial.wait_readable
-    input = serial.readline.chop
-    HTTParty.post('http://127.0.0.1:3000/api/v1/serial_port', body: {'message': input})
+    buffer = ""
+    loop do
+      char = serial.read(1)
+      unless char == "\n"
+        buffer += char.to_s
+      else
+        break
+      end
+    end
+    puts(buffer)
+    HTTParty.post('http://127.0.0.1:3000/api/v1/serial_port', body: {'message': buffer.to_s})
   end
 end
 
