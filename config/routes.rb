@@ -1,5 +1,9 @@
+require 'sidekiq/web'
+
 Rails.application.routes.draw do
   root "index#index"
+  mount Sidekiq::Web => '/sidekiq'
+
   namespace :api do
     namespace :v1 do
       mount ActionCable.server => '/cable'
@@ -11,8 +15,16 @@ Rails.application.routes.draw do
       resources :current_tasks
       post '/manual_control' => 'manual_control#rotate'
 
-      post '/serial_port' => 'serial_port#send_message'
+      # post '/serial_port' => 'serial_port#send_message' #TODO move this to arduino controller
       get '/serial_port' => 'serial_port#receive_message'
+
+      namespace :arduino do
+        get '/find' => 'arduino#find'
+        get '/status' => 'arduino#status'
+        post '/connect' => 'arduino#connect'
+        get '/disconnect' => 'arduino#disconnect'
+
+      end
     end
   end
 

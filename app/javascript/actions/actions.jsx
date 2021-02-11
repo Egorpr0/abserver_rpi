@@ -12,10 +12,8 @@ export const setTaskListLoadingStatus = (store, status) => {
 
 export const addSerialMessage = (store, receivedMessage) => {
   var old_messages = store.state.serialMessages;
-  debugger;
   if (old_messages.length >= 8) {
     old_messages.shift();
-    console.log("shifted");
   }
   old_messages.push(receivedMessage);
   store.setState({
@@ -30,11 +28,9 @@ export const updateArduino = (store, newArduinoParams) => {
 };
 
 export const sendSerialMessage = (store, messageString) => {
-  fetch("/api/v1/serial_port?message=" + messageString)
-    .catch((err) => {
-      console.error(err);
-    })
-    .then(message.success(`"${messageString}" sent!`));
+  fetch("/api/v1/serial_port?message=" + messageString).catch((err) => {
+    console.error(err);
+  });
   // Axios({ method: "get", url: "/api/v1/serial_port", params: { message: data } }).then(
   //   message.success("Message sent!")
   // ); //TODO figure out why not working with axios

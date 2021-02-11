@@ -6,8 +6,8 @@ class Api::V1::SerialPortController < ApplicationController
     redis.publish('serial-port', params[:message].to_s)
   end
 
-  def send_message #post, send message to frontend
-    ActionCable.server.broadcast 'serial_port_channel',
-      params.to_json
-  end
+  # def send_message #post, send message to frontend
+    # ActionCable.server.broadcast 'serial_port_channel',
+      # params.to_json
+  # end
 end

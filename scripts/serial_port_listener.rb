@@ -13,7 +13,7 @@ send = Thread.new do
   @redis = Redis.new
   @redis.subscribe('serial-port') do |on|
     on.message do |channel, msg|
-      serial.write(msg)
+      s erial.write(msg)
     end
   end
 end

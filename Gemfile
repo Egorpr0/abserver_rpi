@@ -3,12 +3,12 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.7.0'
 
+gem 'sidekiq'
+
 gem 'react-rails'
 
 gem 'redis'
 gem 'redis-rails'
-
-gem 'byebug'
 
 gem 'action_cable_client'
 

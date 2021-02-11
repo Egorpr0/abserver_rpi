@@ -1,24 +1,7 @@
-# README
+# SMART_TELESCOPE_RPI - make your telescope independent!
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Works with [smart_telescope_arduino](https://github.com/Egorpr0/smart_telescope_arduino)
 
-Things you may want to cover:
+## Web API docs
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+### Coming soon...

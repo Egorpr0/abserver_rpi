@@ -7,9 +7,9 @@ import * as actions from "../actions/actions";
 const initialState = {
   arduino: {
     status: "test1",
-    connected: true,
+    connected: false,
     port: "/dev/ttyUSB0",
-    connectionSpeed: "115200",
+    baudrate: 115200,
     stepperHaDeg: 0,
     stepperDecDeg: 0,
   },
