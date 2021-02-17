@@ -12,6 +12,7 @@ const initialState = {
     baudrate: 115200,
     stepperHaDeg: 0,
     stepperDecDeg: 0,
+    RAMfree: 0,
   },
   APIurl: "/api/v1",
   taskList: [],

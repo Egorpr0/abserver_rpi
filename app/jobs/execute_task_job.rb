@@ -1,22 +1,29 @@
-class ExecuteTaskJob < ApplicationJob
+class ExecuteTaskJob
   include Sidekiq::Worker
-  queue_as :default
+  sidekiq_options retry: false
 
   def perform(task_id)
-    task = Task.find(task_id)
-    system('python3 scripts/astro_calculator/calculator.py')
-    progress = 0;
+    #system('python3 scripts/astro_calculator/calculator.py')
 
-    ActionCable.server.broadcast 'tasks_update_channel', taskId: task.id, action: 'update', parameter: 'status.state', value: 'in_progress'
+    
+    progress = 0.0
+    update_task(task_id, {"status" => "in_progress"})
     10.times do
-      sleep(3)
-      progress += 10
-      ActionCable.server.broadcast 'tasks_update_channel', taskId: task.id, action: 'update', parameter: 'status.progress', value: progress.to_s
+      sleep(2)
+      progress += 0.1
+      update_task(task_id, {"progress" => progress})
     end
-    ActionCable.server.broadcast 'tasks_update_channel', taskId: task.id, action: 'update', parameter: 'status.state', value: 'completed'
-    ActionCable.server.broadcast 'tasks_update_channel', taskId: task.id, action: 'update', parameter: 'status.progress', value: '0'
-    task.status = {'state' => 'completed', 'progress' => '0', 'last_executed' => ''}.to_json
-    task.save
+    sleep(2)
+    update_task(task_id, {"progress" => 0, "status" => "completed"})
+    sleep(5)
+    update_task(task_id, {"status" => nil})
+  end
 
+  def update_task(task_id, params)
+    @task = Task.find(task_id)
+    @task.assign_attributes(params)
+    if @task.save
+      ActionCable.server.broadcast 'tasks_update_channel', action: "update", taskId: @task.id, values: params.to_json
+    end
   end
 end

@@ -10,16 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_20_075904) do
+ActiveRecord::Schema.define(version: 2021_02_12_103755) do
 
   create_table "tasks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
     t.string "name"
-    t.string "tracked_object"
-    t.text "shutter_speed", size: :long, collation: "utf8mb4_bin"
-    t.integer "exposures_number"
-    t.text "status", size: :long, collation: "utf8mb4_bin"
+    t.string "trackedObjectName"
+    t.text "shutterSpeed", size: :long
+    t.integer "exposuresNumber"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "trackedObjectId"
+    t.string "status"
+    t.float "progress"
   end
 
 end

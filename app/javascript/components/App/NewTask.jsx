@@ -1,8 +1,11 @@
-import React, { useState, useContext } from "react";
-import { AutoComplete, Button, Card, Input, Row, Select, Form, InputNumber } from "antd";
+import React, { useState, useEffect } from "react";
+import { AutoComplete, Button, Card, Input, Row, Select, Form, InputNumber, message } from "antd";
 import Text from "antd/lib/typography/Text";
 import { useForm } from "antd/lib/form/Form";
+import Axios from "axios";
+
 import { TaskList } from "./TaskList";
+import useGlobal from "../../stores/globalStateStore";
 
 const shutterSpeeds = [
   { text: "1/4000", value: 0.00025 },
@@ -22,10 +25,6 @@ const shutterSpeeds = [
 
 const skyObjects = [{ value: "Burns Bay Road" }, { value: "Downing Street" }, { value: "Wall Street" }];
 
-const APIurl = "/api/v1";
-
-import useGlobal from "../../stores/globalStateStore";
-
 const NewTask = () => {
   const [globalState, globalActions] = useGlobal();
   const [form] = useForm();
@@ -40,27 +39,17 @@ const NewTask = () => {
         <Form
           form={form}
           onFinish={(values) => {
-            const token = document.querySelector("[name=csrf-token]").content;
-            fetch(APIurl + "/tasks", {
-              method: "POST",
-              mode: "cors",
-              cache: "no-cache",
-              credentials: "same-origin",
-              headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": token,
-              },
-              redirect: "follow",
-              referrerPolicy: "no-referrer",
-              body: JSON.stringify(values),
+            console.log(values);
+            Axios.post("/api/v1/tasks", { ...values }).then(() => {
+              message.success("Task sucesfully created!");
             });
           }}
         >
           <Form.Item name="name" style={{ marginBottom: "5px" }}>
-            <Input name="task_name" placeholder="Task name" />
+            <Input placeholder="Task name" />
           </Form.Item>
           <Form.Item
-            name="tracked_object"
+            name="trackedObjectName"
             style={{
               marginBottom: "5px",
             }}
@@ -72,14 +61,13 @@ const NewTask = () => {
             ]}
           >
             <AutoComplete
-              name="tracked_object"
               placeholder="Object to track"
               options={skyObjects}
               filterOption={(inputValue, option) => option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
             />
           </Form.Item>
-          <Form.Item name="shutter_speed" style={{ height: "10%", marginBottom: "5px" }}>
-            <Select name="shutter_speed" placeholder="Shutter speed" onChange={(value) => setExposureTime(value)}>
+          <Form.Item name="shutterSpeed" style={{ height: "10%", marginBottom: "5px" }}>
+            <Select placeholder="Shutter speed" onChange={(value) => setExposureTime(value)}>
               {shutterSpeeds.map((item) => (
                 <Select.Option key={item.text} value={item.value}>
                   {item.text}
@@ -89,13 +77,12 @@ const NewTask = () => {
           </Form.Item>
           <Row>
             <Form.Item
-              name="exposures_number"
+              name="exposuresNumber"
               required
               style={{ width: "33%", marginRight: "auto", marginBottom: "5px" }}
             >
               <InputNumber
                 style={{ width: "100%" }}
-                name="exposures_number"
                 min="1"
                 placeholder="Exposures"
                 onChange={(value) => setExposuresNumber(value)}

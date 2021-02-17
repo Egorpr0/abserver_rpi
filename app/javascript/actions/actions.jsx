@@ -1,23 +1,63 @@
+import { message } from "antd";
+
 export const removeTask = (store, excludingTask) => {
   store.setState({ taskListLoading: true });
   const reducedArray = store.state.taskList.slice(0).filter((task) => task.id !== excludingTask);
   store.setState({ taskList: [] }, () => store.setState({ taskList: reducedArray, taskListLoading: false }));
 };
 
-export const setTaskListLoadingStatus = (store, status) => {
+export const setTaskListLoading = (store, status) => {
   store.setState({
     taskListLoading: status,
   });
 };
 
-export const addSerialMessage = (store, receivedMessage) => {
-  var old_messages = store.state.serialMessages;
-  if (old_messages.length >= 8) {
-    old_messages.shift();
+export const updateTaskList = (store, { action, taskId, values }) => {
+  switch (action) {
+    case "set":
+      store.setState({
+        taskList: values,
+      });
+    case "add":
+      var oldTaskList = Array.from(store.state.taskList);
+      oldTaskList.push(values);
+      store.setState({
+        taskList: oldTaskList,
+      });
+      break;
+    case "delete":
+      var oldTaskList = Array.from(store.state.taskList);
+      var taskIndex = oldTaskList.findIndex((task) => task.id == taskId);
+      oldTaskList.splice(taskIndex, 1);
+      store.setState({
+        taskList: oldTaskList,
+      });
+      break;
+    case "update":
+      var taskIndex = store.state.taskList.findIndex((task) => task.id == taskId);
+      if (taskIndex > -1) {
+        oldTaskList = store.state.taskList;
+        var task = oldTaskList[taskIndex];
+        oldTaskList[taskIndex] = { ...task, ...values };
+        store.setState({
+          taskList: oldTaskList,
+        });
+      } else {
+        message.error("Task not found, try refreshig the page");
+      }
+    default:
+      break;
   }
-  old_messages.push(receivedMessage);
+};
+
+export const addSerialMessage = (store, receivedMessage) => {
+  var oldMessages = Array.from(store.state.serialMessages);
+  if (oldMessages.length >= 8) {
+    oldMessages.shift();
+  }
+  oldMessages.push(receivedMessage);
   store.setState({
-    serialMessages: old_messages,
+    serialMessages: oldMessages,
   });
 };
 

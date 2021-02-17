@@ -7,7 +7,7 @@ from random import random
 import sys, time, redis, json, pdb
 
 
-# python3 calculator.py <latitude [float]> <longitude [float]> <object [json]> <execution time [int|seconds]>
+# python3 calculator.py <latitude [float]> <longitude [float]> <object id [int]> <execution time [int|seconds]>
 lat = float(sys.argv[1])
 long = float(sys.argv[2])
 object = json.loads(sys.argv[3])

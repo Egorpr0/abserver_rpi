@@ -13,35 +13,29 @@ class Api::V1::TasksController < ApplicationController
   end
 
   def execute
-    ExecuteTaskJob.perform_later(params[:task_id])
-  end
-
-  def edit
+    ExecuteTaskJob.perform_async(params[:task_id])
   end
 
   def create
-    @task = Task.new
-    @task.name = params[:name]
-    @task.tracked_object = params[:tracked_object]
-    @task.shutter_speed = params[:shutter_speed]
-    @task.exposures_number = params[:exposures_number].to_i
-    @task.status = {"state" => "added", "progress" => "0", "last_executed" => ""}.to_json
-
+    @params = params.permit(:name, :trackedObjectName, :shutterSpeed, :exposuresNumber)
+    @task = Task.new(@params)
     if @task.save
-      puts "Task saved with:" + params.to_s
-      ActionCable.server.broadcast 'tasks_update_channel', action: "add", parameter: "task", value: @task.to_json
-    else
-      puts "Task NOT saved with:" + params.to_s
+      ActionCable.server.broadcast 'tasks_update_channel', action: "add", taskId: @task.id, values: @task.to_json 
     end
   end
 
   def update
-
+    @params = params.permit(:id, :name, :trackedObjectName, :shutterSpeed, :exposuresNumber, :trackedObjectId, :status, :progress)
+    @task = Task.find(@params[:id])
+    @task.assign_attributes(@params)
+    if @task.save
+      ActionCable.server.broadcast 'tasks_update_channel', action: "update", taskId: @task.id, values: @params.to_json
+    end
   end
 
   def destroy
     if @task = Task.destroy(params[:id])
-      ActionCable.server.broadcast 'tasks_update_channel', action: "delete", parameter: "task", value: @task.to_json
+      ActionCable.server.broadcast 'tasks_update_channel', action: "delete", taskId: @task.id, values: @task.to_json
     end
   end
 end

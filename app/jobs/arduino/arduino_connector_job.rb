@@ -7,6 +7,8 @@ class Arduino::ArduinoConnectorJob
   include Sidekiq::Worker
   sidekiq_options retry: false
 
+  $watcherFrequency = 0.25
+
   $arduinoConnected = nil
 
   def perform(port, baudRate)
@@ -14,6 +16,7 @@ class Arduino::ArduinoConnectorJob
       serial = SerialPort.new(port, baudRate)
       serial.flush_input
       $arduinoConnected = true
+      Rails.cache.write('arduinoConnectorStatus', 'connecting ')
       ActionCable.server.broadcast 'serial_port_channel', 
         {'type' => 'actionResponse', 'description' => 'arduino_connected'}.to_json
 
@@ -54,6 +57,7 @@ class Arduino::ArduinoConnectorJob
 
           begin
             messageJson = JSON.parse(buffer.chomp)
+            Rails.cache.write("arduinoConnectorStatus", "connected")
             if messageJson['type'] == 'initialize'
               Rails.cache.write('arduinoConnectorStatus', 'connected')
               puts 'Arduino initialized!'
@@ -63,6 +67,7 @@ class Arduino::ArduinoConnectorJob
           end
 
           ActionCable.server.broadcast 'serial_port_channel', buffer.to_s.chomp
+
         end
       end
 
@@ -83,7 +88,7 @@ class Arduino::ArduinoConnectorJob
             terminate_job([$send, $recieve, $connectionWatcher])
           end
 
-          sleep(1)         
+          sleep($watcherFrequency)         
         end
       end
 
@@ -94,7 +99,7 @@ class Arduino::ArduinoConnectorJob
   end
 
   private def terminate_job(threads = nil)
-    puts "Terminatig job! "
+    puts "Terminatig job!"
     Rails.cache.write('arduinoConnectorStatus', 'disconnected')
     Rails.cache.write("arduinoConnectorTerminate", false)
     $arduinoConnected = false
