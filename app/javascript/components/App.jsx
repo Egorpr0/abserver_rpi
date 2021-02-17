@@ -3,9 +3,9 @@ import { Col, Layout, Row } from "antd";
 
 //Custom components
 import NewTask from "./App/NewTask";
-import ManualControl from "./App/ManualControl";
 import TaskList from "./App/TaskList";
 import InfoCard from "./App/InfoCard";
+import SerialConsole from "./App/TaskList/SerialConsole";
 
 const { Content } = Layout;
 
@@ -25,7 +25,7 @@ const Home = () => {
       </Row>
       <Row>
         <Col span="24" gutter={[8, 8]}>
-          <ManualControl />
+          <SerialConsole />
         </Col>
       </Row>
     </>
