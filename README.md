@@ -1,6 +1,6 @@
-# SMART_TELESCOPE_RPI - make your telescope smarter!
+# ABSERVER - make your telescope autonomous!
 
-Works with [smart_telescope_arduino](https://github.com/Egorpr0/smart_telescope_arduino)
+Works with [abserver_arduino](https://github.com/Egorpr0/abserver_arduino)
 
 ## Web API docs
 
