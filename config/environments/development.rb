@@ -1,6 +1,4 @@
 Rails.application.configure do
-  config.hosts << "9f6a3fd0ecf9.ngrok.io"
-  
   config.web_console.whiny_requests = false
 
   # Settings specified here will take precedence over those in config/application.rb.
@@ -24,7 +22,8 @@ Rails.application.configure do
     config.action_controller.perform_caching = true
     config.action_controller.enable_fragment_cache_logging = true
 
-    config.cache_store = :redis_cache_store, { url: "redis://localhost:6379/0" }
+    config.cache_store = :redis_cache_store, { url: "redis://#{ENV["REDIS_URL"]}:6379/0" }
+    #ENV['REDIS_URL']
     
     config.public_file_server.headers = {
       'Cache-Control' => "public, max-age=#{2.days.to_i}"
