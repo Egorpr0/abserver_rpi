@@ -12,9 +12,12 @@ RUN apt update
 
 RUN apt -y install yarn
 
+COPY ./package.json ./package.json
+
+RUN yarn install --frozen-lockfile --link-duplicates
+
 COPY . .
 
-RUN yarn install --frozen-lockfile
 RUN bundle install --jobs `getconf _NPROCESSORS_ONLN`
 
 ENV MARIADB_USERNAME=root
