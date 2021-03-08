@@ -14,8 +14,8 @@ RUN apt -y install yarn
 
 COPY . .
 
-RUN yarn install --prefer-offline --frozen-lockfile --cache-folder ./cache
-RUN bundle install
+RUN yarn install --frozen-lockfile
+RUN bundle install --jobs `getconf _NPROCESSORS_ONLN`
 
 ENV MARIADB_USERNAME=root
 ENV MARIADB_PASSWORD=root
