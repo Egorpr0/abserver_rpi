@@ -1,3 +1,5 @@
+sidekiq &
+
 while ! exec 6<>/dev/tcp/${MARIADB_ADDRESS}/3306; do
     echo "$(date) - still trying to connect to mariadb at ${MARIADB_ADDRESS}"
     sleep 1
