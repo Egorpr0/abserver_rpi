@@ -2,7 +2,7 @@ class Api::V1::SerialPortController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def receive_message #get, send message to arduino
-    redis = Redis.new
+    redis = Redis.new(url: "redis://#{ENV["REDIS_URL"]}:6379/0")
     redis.publish('serial-port', params[:message].to_s)
   end
 

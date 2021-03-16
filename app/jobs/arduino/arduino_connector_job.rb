@@ -28,10 +28,11 @@ class Arduino::ArduinoConnectorJob
       terminate_job()
     end
 
+    $redis = Redis.new(url: "redis://#{ENV["REDIS_URL"]}:6379/1")
+
     if $arduinoConnected
       $send = Thread.new do
-        @redis = Redis.new
-        @redis.subscribe('serial-port') do |on|
+        $redis.subscribe('serial-port') do |on|
           on.message do |channel, msg|
             serial.write(msg)
           end
