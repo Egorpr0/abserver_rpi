@@ -18,6 +18,7 @@ export const updateTaskList = (store, { action, taskId, values }) => {
       store.setState({
         taskList: values,
       });
+      break;
     case "add":
       var oldTaskList = Array.from(store.state.taskList);
       oldTaskList.push(values);
@@ -45,6 +46,7 @@ export const updateTaskList = (store, { action, taskId, values }) => {
       } else {
         message.error("Task not found, try refreshig the page");
       }
+      break;
     default:
       break;
   }
