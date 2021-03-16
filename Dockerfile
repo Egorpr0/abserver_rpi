@@ -12,9 +12,10 @@ RUN apt update
 RUN apt -y install yarn
 
 COPY ./package.json ./package.json
-COPY ./Gemfile ./Gemfile
+COPY ./yarn.lock ./yarn.lock
+COPY ./Gemfile* ./
 
-RUN yarn install --no-lockfile  --network-timeout 100000
+RUN yarn install --network-timeout 100000
 RUN bundle install
 
 COPY . .
