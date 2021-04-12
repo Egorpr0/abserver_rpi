@@ -29,7 +29,7 @@ const TaskList = () => {
 
   return (
     <>
-      <Card title={<Text>Tasks</Text>} hoverable>
+      <Card title={<Text>Tasks</Text>}>
         <List
           bordered
           size="small"

@@ -108,7 +108,6 @@ const BasicInfo = () => {
     <>
       <Card
         title="Arduino status"
-        hoverable="true"
         style={{ height: "269px" }}
         extra={
           <>
@@ -236,6 +235,7 @@ const BasicInfo = () => {
                 key={value}
                 onClick={() => handleAngleAdjust({ decDiff: value })}
                 disabled={!globalState.arduino.connected}
+                style={{width: "10%"}}
               >
                 {value > 0 ? "+" + value : value}°
               </Button>

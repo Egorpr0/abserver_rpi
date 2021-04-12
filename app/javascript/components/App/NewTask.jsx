@@ -35,7 +35,7 @@ const NewTask = () => {
 
   return (
     <>
-      <Card title="New task" hoverable style={{ width: "100%", height: "100%" }}>
+      <Card title="New task" style={{ width: "100%", height: "100%" }}>
         <Form
           form={form}
           onFinish={(values) => {

@@ -49,3 +49,5 @@ smart-telescope.sublime-project
 /yarn-error.log
 yarn-debug.log*
 .yarn-integrity
+
+*.bsp

@@ -31,7 +31,7 @@ const SerialConsole = () => {
   }, []);
 
   return (
-    <Card title="Serial console" hoverable style={{ width: "100%", height: "100%" }}>
+    <Card title="Serial console" style={{ width: "100%", height: "100%" }}>
       <div
         style={{
           border: "1px",

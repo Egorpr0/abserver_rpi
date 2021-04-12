@@ -6,6 +6,7 @@ import NewTask from "./App/NewTask";
 import TaskList from "./App/TaskList";
 import InfoCard from "./App/InfoCard";
 import SerialConsole from "./App/TaskList/SerialConsole";
+import ConfigsCard from "./App/ConfigsCard";
 
 const { Content } = Layout;
 
@@ -23,9 +24,12 @@ const Home = () => {
           <NewTask />
         </Col>
       </Row>
-      <Row>
-        <Col span="24" gutter={[8, 8]}>
+      <Row span="24" gutter={[8, 8]}>
+        <Col span="12">
           <SerialConsole />
+        </Col>
+        <Col span="12">
+          <ConfigsCard />
         </Col>
       </Row>
     </>

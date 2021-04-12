@@ -13,8 +13,10 @@ Rails.application.routes.draw do
         get 'terminate' => 'tasks#terminate'
       end
       resources :current_tasks
-      post '/manual_control' => 'manual_control#rotate'
 
+      resources :configs
+
+      post '/manual_control' => 'manual_control#rotate'
       # post '/serial_port' => 'serial_port#send_message' #TODO move this to arduino controller
       get '/serial_port' => 'serial_port#receive_message'
 
