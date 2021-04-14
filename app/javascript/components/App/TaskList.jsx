@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useReducer } from "react";
-import { Card, List, message, Button } from "antd";
+import { Card, List, message, Button, Row } from "antd";
 import Axios from "axios";
 import Text from "antd/lib/typography/Text";
 import Task from "./TaskList/Task";
@@ -29,13 +29,13 @@ const TaskList = () => {
 
   return (
     <>
-      <Card title={<Text>Tasks</Text>}>
+      <Card title={<Text>Tasks</Text>} style={{height: "100%"}}>
         <List
           bordered
           size="small"
           loading={false}
           dataSource={globalState.taskList}
-          style={{ overflow: "auto", height: "200px" }}
+          style={{ overflow: "auto", height: "250px" }}
           renderItem={(task) => {
             return (
               <List.Item>

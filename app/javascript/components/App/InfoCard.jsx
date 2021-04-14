@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Card, Space, Typography, Divider, Select, Radio, Button, message, Row, Col } from "antd";
 import useGlobal from "../../stores/globalStateStore";
 import { CheckCircleTwoTone, CloseSquareTwoTone, ConsoleSqlOutlined } from "@ant-design/icons";
-import Axios from "axios";
+import axios from "axios";
 
 const { Text } = Typography;
 const { Option } = Select;
@@ -92,10 +92,10 @@ const BasicInfo = () => {
         }
       },
     });
-    Axios.get("/api/v1/arduino/find").then((response) => {
+    axios.get("/api/v1/arduino/find").then((response) => {
       setPortsAvaliable(response.data.devices);
     });
-    Axios.get("/api/v1/arduino/status").then((response) => {
+    axios.get("/api/v1/arduino/status").then((response) => {
       if (response.data.status == "connected") {
         globalActions.updateArduino({ connected: true });
       } else {
@@ -108,7 +108,7 @@ const BasicInfo = () => {
     <>
       <Card
         title="Arduino status"
-        style={{ height: "269px" }}
+        style={{ height: "100%" }}
         extra={
           <>
             <Button
@@ -173,7 +173,7 @@ const BasicInfo = () => {
               style={{ width: "50%" }}
               defaultValue={globalState.arduino.port}
               onDropdownVisibleChange={() => {
-                Axios.get("/api/v1/arduino/find").then((response) => {
+                axios.get("/api/v1/arduino/find").then((response) => {
                   setPortsAvaliable(response.data.devices);
                 });
               }}
@@ -196,7 +196,7 @@ const BasicInfo = () => {
               type="primary"
               style={{ width: "50%" }}
               onClick={() => {
-                Axios.post("/api/v1/arduino/connect", {
+                axios.post("/api/v1/arduino/connect", {
                   port: globalState.arduino.port,
                   baudrate: globalState.arduino.baudrate,
                 });
@@ -217,29 +217,35 @@ const BasicInfo = () => {
             </Button>
           </Row>
           <Row style={{ width: "100%" }}>
-            <Text style={{ fontSize: "15pt", alignSelf: "center" }}>HA controls:</Text>
-            {buttonAdjustments.map((value) => (
-              <Button
-                key={value}
-                onClick={() => handleAngleAdjust({ haDiff: value })}
-                disabled={!globalState.arduino.connected}
-              >
-                {value > 0 ? "+" + value : value}°
-              </Button>
-            ))}
+            <Text style={{ fontSize: "15pt", alignSelf: "center" }}>Hour angle controls:</Text>
+            <div style={{marginLeft: "auto", float: "right"}}>
+              {buttonAdjustments.map((value) => (
+                <Button
+                  key={value}
+                  onClick={() => handleAngleAdjust({ haDiff: value })}
+                  disabled={!globalState.arduino.connected}
+                >
+                  {value > 0 ? "+" + value : value}°
+                </Button>
+              ))}
+            </div>
           </Row>
           <Row>
-            <Text style={{ fontSize: "15pt", alignSelf: "center" }}>DEC controls:</Text>
-            {buttonAdjustments.map((value) => (
-              <Button
-                key={value}
-                onClick={() => handleAngleAdjust({ decDiff: value })}
-                disabled={!globalState.arduino.connected}
-                style={{width: "10%"}}
-              >
-                {value > 0 ? "+" + value : value}°
-              </Button>
-            ))}
+            <Text style={{ fontSize: "15pt", alignSelf: "center" }}>Declination controls:</Text>
+              <div style={{marginLeft: "auto", float: "right"}}>
+                {buttonAdjustments.map((value) => (
+                  <Button
+                    key={value}
+                    onClick={() => handleAngleAdjust({ decDiff: value })}
+                    disabled={!globalState.arduino.connected}
+                  >
+                    {value > 0 ? "+" + value : value}°
+                  </Button>
+                ))}
+              </div>
+          </Row>
+          <Row>
+
           </Row>
         </Space>
       </Card>
