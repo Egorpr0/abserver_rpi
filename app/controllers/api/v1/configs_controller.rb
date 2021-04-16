@@ -21,14 +21,21 @@ class Api::V1::ConfigsController < ApplicationController
 
   def show
     @params = params.permit(:id)
-    @config = Config.find(params[:id])
-    render json: @config
+    if(/\A\d+\z/.match(@params[:id]))
+      @config = Config.find(params[:id])
+      render json: @config
+    else
+      if params[:id] == 'reset'
+        Rake::Task['configs:set_defaults'].reenable
+        Rake::Task['configs:set_defaults'].invoke
+      end
+    end
   end
 
   def update
     @params = params.permit(:id, :value)
     @config = Config.find(@params[:id])
-    @config.assign_attributes(@params)
+    @config.value = @params[:value]
     @config.save
   end
 

@@ -1,0 +1,22 @@
+configs:
+  data:
+    files_location: 
+        value_type: path
+        value: './data/'
+        modifiable: false
+    start_time:
+        value_type: date  
+        value: '2021-04-15'
+        modifiable: true
+    end_time:
+        value_type: date
+        value: '2021-05-15'
+        modifiable: true
+    store_planets:
+        value_type: boolean
+        value: true
+        modifiable: true
+    store_moons:
+        value_type: boolean
+        value: false
+        modifiable: true

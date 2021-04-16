@@ -3,8 +3,10 @@ import axios from "axios";
 
 export const useConfigsStore = create(set => ({
   configs: undefined,
+  isLoading: true,
   fetchConfigs: () => {
-    axios.get("http://localhost:3000/api/v1/configs").then((response) => set({configs: response.data}));
+    set({isLoading: true});
+    axios.get("/api/v1/configs").then((response) => set({configs: response.data, isLoading: false}));
   }
 }))
 

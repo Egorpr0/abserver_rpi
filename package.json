@@ -17,6 +17,7 @@
     "axios": "^0.21.0",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
     "bootstrap": "^4.5.3",
+    "dayjs": "^1.10.4",
     "mobx": "6.0.0",
     "mobx-persist": "^0.4.1",
     "mobx-react-form": "^3.0.0",

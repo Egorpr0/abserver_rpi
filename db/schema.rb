@@ -17,7 +17,9 @@ ActiveRecord::Schema.define(version: 2021_04_11_125146) do
     t.string "value"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "type"
+    t.string "value_type"
+    t.boolean "modifiable"
+    t.string "subcategory"
     t.index ["name"], name: "index_configs_on_name", unique: true
   end
 

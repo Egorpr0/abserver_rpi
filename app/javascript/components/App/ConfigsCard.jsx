@@ -1,90 +1,98 @@
 import React, {useEffect, useState} from "react";
 import { useConfigsStore } from "stores/configsStore";
-import { Card, List, Dropdown, Typography, Icon, Input, Form, Button, Menu, Modal } from "antd"
-import { PlusOutlined } from "@ant-design/icons";
-import configDescription from "constants/configText";
+import { Card, List, Typography, Input, Button, Popconfirm, Checkbox } from "antd"
+import DatePicker from "custom/DatePicker";
+import {configDescriptions, configNames} from "constants/configText";
 import axios from "axios";
+import dayjs from "dayjs";
 
 const { Text } = Typography;
 
-const RenderAddParamButton = ({fetchConfigs}) => {
+const ResetToDefaultsButton = ({fetchConfigs}) => {
+  const [okButtonEnabled, setOkButtonEnabled] = useState(false);
 
-  const [form] = Form.useForm();
-  const [allowCreation, setAllowCreation] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
-
-  const RenderContent = () => {
-    return(
-      <Form
-        form={form}
-        onFinish={(values) => axios.post("api/v1/configs", values).then(() => fetchConfigs())}
-        onValuesChange={() => {
-          const formFields = form.getFieldsValue();
-          var unfilledFields = 0;
-          [formFields.name, formFields.value].forEach((value) => {
-            if(typeof value === 'undefined' || value === ''){
-              unfilledFields++;
-            };
-          })
-          unfilledFields == 0 ? setAllowCreation(true) : setAllowCreation(false);
-        }}>
-        <Form.Item name="name" label="Name:" rules={[{required: true, message: "Enter name first!"}]}>
-          <Input id="name-input" key="name-input"></Input>
-        </Form.Item>
-        <Form.Item name="value" label="Value:" rules={[{required: true, message: "Enter parameter value first!"}]}>
-          <Input id="value-input" key="value-input"></Input>
-        </Form.Item>
-      </Form>
-    )
+  const resetToDefaults = () => {
+    axios.request({method: 'GET', url: '/api/v1/configs/reset', headers: {Accept: '*/*'}}).then(() => fetchConfigs());
   }
+
+  const handleButtonClick = () => {
+    setOkButtonEnabled(false);
+    setTimeout(() => setOkButtonEnabled(true), 1000);
+  }
+
   return(
-    <>
-      <Button shape="round" icon={<PlusOutlined />} onClick={() => setModalVisible(true)}/>
-      <Modal 
-        visible={modalVisible}
-        title="Create new config"
-        onOk={() => {form.submit(); setModalVisible(false)}}
-        onCancel={() => {form.resetFields(); setAllowCreation(false); setModalVisible(false)}}
-        okText="Create"
-        cancelText="Cancel"
-        okButtonProps={{disabled: !allowCreation}}>
-          <RenderContent />
-      </Modal>
-    </>
+    <Popconfirm
+      title="Are you sure? All configs will be owerwritten!"
+      placement="topRight"
+      okButtonProps={{disabled: !okButtonEnabled}}
+      onVisibleChange={() => handleButtonClick()}
+      okType="danger"
+      onConfirm={() => resetToDefaults()}
+      >
+      <Button type="dashed">
+        Reset to defaults
+      </Button>
+    </Popconfirm>
   )
 }
 
 const ConfigsCard = () => {
   const configs = useConfigsStore(state => state.configs);
   const fetchConfigs = useConfigsStore(state => state.fetchConfigs);
-  const [isLoading, setIsLoading] = useState(true);
+  const isLoading = useConfigsStore(state => state.isLoading);
 
   useEffect(() => {
     fetchConfigs();
   }, []);
 
-  useEffect(() => {configs ?  setIsLoading(false) :  setIsLoading(true)}, [configs]);
+  const RenderConfigInput = ({config}) => {
+    const inputsStyle = {style: {width: "30%", minWidth: "50px"}};
+
+    const handleChange = async (config, value) => {
+      axios.put('/api/v1/configs/' + config.id, {value: value}).then(() => fetchConfigs());
+    }
+
+    switch (config.value_type) {
+      case 'boolean':
+        return <Checkbox
+                  disabled={!config.modifiable}
+                  checked={!!+config.value}
+                  onChange={(value) => handleChange(config, value.target.checked)}/>
+      case 'path':
+        return <Input
+                  disabled={!config.modifiable}
+                  defaultValue={config.value}
+                  onPressEnter={(value) => handleChange(config, value.target.value)}
+                  {...inputsStyle}/>
+      case 'date':
+        return <DatePicker
+                  disabled={!config.modifiable}
+                  defaultValue={dayjs(config.value)}
+                  onChange={(value) => handleChange(config, value.format('YYYY-MM-DD'))}
+                  {...inputsStyle} />
+      default:
+        return(
+          <Text>{config.value}</Text>
+        )
+    }
+
+
+  }
 
   const renderConfig = (config) => {
     return (
-      <>
-        <List.Item key={config.name}>
-          <List.Item.Meta
-            title={config.name}
-            description={configDescription[config.name]} />
-          <Input
-            key={config.name}
-            defaultValue={config.value}
-            onFocusCapture={() => console.log("Focus capture")}
-            style={{width: "30%", minWidth: "50px"}} />
-        </List.Item>
-      </>
+      <List.Item key={config.name}>
+        <List.Item.Meta
+          title={configNames[config.name]}
+          description={configDescriptions[config.name] == undefined ? 'Default description' : configDescriptions[config.name]} />
+        <RenderConfigInput config={config}/>
+      </List.Item>
       )
   }
 
   return(
     <>
-      <Card title="Configs" extra={<RenderAddParamButton fetchConfigs={fetchConfigs}/>}>
+      <Card title="Configs" extra={<ResetToDefaultsButton fetchConfigs={fetchConfigs}/>}>
         <List
           bordered
           loading={isLoading}
