@@ -46,7 +46,7 @@ const NewTask = () => {
           }}
         >
           <Form.Item name="name" style={{ marginBottom: "5px" }}>
-            <Input placeholder="Task name" />
+            <Input placeholder="Task name" id="taskName"/>
           </Form.Item>
           <Form.Item
             name="trackedObjectName"

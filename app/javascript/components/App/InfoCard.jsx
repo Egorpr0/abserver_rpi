@@ -162,31 +162,20 @@ const BasicInfo = () => {
               defaultValue={globalState.arduino.baudrate}
               onChange={(value) => globalActions.updateArduino({ baudrate: value })}
             >
-              {baudrateVariants.map((baudrate, index) => (
-                <Option value={baudrate} key={index}>
-                  {baudrate}
-                </Option>
-              ))}
+              {baudrateVariants.map((baudrate, index) => <Option value={baudrate} key={index}>{baudrate}</Option>)}
             </Select>
+
             <Select
               placeholder="Port number:"
               style={{ width: "50%" }}
               defaultValue={globalState.arduino.port}
+              onChange={(value) => globalActions.updateArduino({ port: value })}
               onDropdownVisibleChange={() => {
-                axios.get("/api/v1/arduino/find").then((response) => {
-                  setPortsAvaliable(response.data.devices);
-                });
+                axios.get("/api/v1/arduino/find").then((response) => setPortsAvaliable(response.data.devices));
               }}
-              onChange={(value) => {
-                globalActions.updateArduino({ port: value });
-              }}
-            >
+              >
               {portsAvaliable.map((portVariant, index) => {
-                return (
-                  <Option value={portVariant} key={index}>
-                    {portVariant}
-                  </Option>
-                );
+                <Option value={portVariant} key={index}> {portVariant} </Option>
               })}
             </Select>
           </Row>
@@ -195,23 +184,21 @@ const BasicInfo = () => {
               disabled={globalState.arduino.connected}
               type="primary"
               style={{ width: "50%" }}
-              onClick={() => {
-                axios.post("/api/v1/arduino/connect", {
-                  port: globalState.arduino.port,
-                  baudrate: globalState.arduino.baudrate,
-                });
-              }}
+              onClick={() => axios.post("/api/v1/arduino/connect", {
+                port: globalState.arduino.port,
+                baudrate: globalState.arduino.baudrate,
+                })
+              }
             >
               Connect
             </Button>
+
             <Button
               disabled={!globalState.arduino.connected}
               danger
               style={{ width: "50%" }}
               type="primary"
-              onClick={() => {
-                fetch("api/v1/arduino/disconnect");
-              }}
+              onClick={() => fetch("api/v1/arduino/disconnect")}
             >
               Disconnect
             </Button>
