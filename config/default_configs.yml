@@ -1,22 +1,31 @@
 configs:
   data:
     files_location: 
-        value_type: path
-        value: './data/'
-        modifiable: false
+      value_type: path
+      value: './data/'
+      modifiable: false
     start_time:
-        value_type: date  
-        value: '2021-04-15'
-        modifiable: true
+      value_type: date  
+      value: '2021-04-15'
+      modifiable: true
     end_time:
-        value_type: date
-        value: '2021-05-15'
-        modifiable: true
+      value_type: date
+      value: '2021-05-15'
+      modifiable: true
     store_planets:
-        value_type: boolean
-        value: true
-        modifiable: true
+      value_type: boolean
+      value: true
+      modifiable: true
     store_moons:
-        value_type: boolean
-        value: false
-        modifiable: true
+      value_type: boolean
+      value: false
+      modifiable: true
+    store_stars:
+      value_type: boolean
+      value: true
+      modifiable: true
+  arduino:
+    status_report_period:
+      value_type: number
+      value: 2
+      modifiable: true

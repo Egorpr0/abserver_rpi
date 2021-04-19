@@ -1,10 +1,9 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import { useConfigsStore } from "stores/configsStore";
-import { Card, List, Typography, Input, Button, Popconfirm, Checkbox } from "antd"
-import DatePicker from "custom/DatePicker";
+import { Card, List, Typography, Input, Button, Popconfirm, Checkbox, InputNumber, DatePicker, message } from "antd"
 import {configDescriptions, configNames} from "constants/configText";
 import axios from "axios";
-import dayjs from "dayjs";
+import moment from "moment";
 
 const { Text } = Typography;
 
@@ -47,11 +46,11 @@ const ConfigsCard = () => {
 
   const RenderConfigInput = ({config}) => {
     const inputsStyle = {style: {width: "30%", minWidth: "50px"}};
-
     const handleChange = async (config, value) => {
-      axios.put('/api/v1/configs/' + config.id, {value: value}).then(() => fetchConfigs());
+      axios.put('/api/v1/configs/' + config.id, {value: value}).then(() => {fetchConfigs(); message.success(`${configNames[config.name]} saved!`)});
     }
 
+    const [inputValue, setInputValue] = useState(config.value)
     switch (config.value_type) {
       case 'boolean':
         return <Checkbox
@@ -60,31 +59,39 @@ const ConfigsCard = () => {
                   onChange={(value) => handleChange(config, value.target.checked)}/>
       case 'path':
         return <Input
+                  value={inputValue}
                   disabled={!config.modifiable}
                   defaultValue={config.value}
+                  onChange={(event) => setInputValue(event.target.value)}
                   onPressEnter={(value) => handleChange(config, value.target.value)}
                   {...inputsStyle}/>
       case 'date':
         return <DatePicker
                   disabled={!config.modifiable}
-                  defaultValue={dayjs(config.value)}
+                  defaultValue={moment(config.value)}
                   onChange={(value) => handleChange(config, value.format('YYYY-MM-DD'))}
-                  {...inputsStyle} />
+                  {...inputsStyle}/>
+      case 'number':
+        return <InputNumber
+                  value={inputValue}
+                  disabled={!config.modifiable}
+                  defaultValue={config.value}
+                  onBlur={() => setInputValue(config.value)}
+                  onChange={(value) => setInputValue(value.target.value)}
+                  onPressEnter={(value) => handleChange(config, value.target.value)}
+                  {...inputsStyle}/>
       default:
         return(
           <Text>{config.value}</Text>
         )
-    }
-
-
-  }
+    }}
 
   const renderConfig = (config) => {
     return (
       <List.Item key={config.name}>
         <List.Item.Meta
-          title={configNames[config.name]}
-          description={configDescriptions[config.name] == undefined ? 'Default description' : configDescriptions[config.name]} />
+          title={configNames[config.name] == undefined ? config.name : configNames[config.name]}
+          description={configDescriptions[config.name] == undefined ? `Descriptions for ${config.name}` : configDescriptions[config.name]} />
         <RenderConfigInput config={config}/>
       </List.Item>
       )
