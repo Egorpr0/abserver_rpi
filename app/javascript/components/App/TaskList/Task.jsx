@@ -4,6 +4,7 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { RedoOutlined, EditOutlined, DeleteOutlined, PlayCircleOutlined } from "@ant-design/icons";
 import Text from "antd/lib/typography/Text";
 import Axios from "axios";
+import { useTasksStore } from "stores/tasksStore";
 
 import useGlobal from "../../../stores/globalStateStore";
 
@@ -26,8 +27,6 @@ const RenderTaskStatus = ({ status, progress }) => {
 };
 
 const TaskExtraDropdown = ({ taskId }) => {
-  const [globalState, globalActions] = useGlobal();
-
   return (
     <>
       <Menu>
@@ -73,31 +72,29 @@ const TaskExtraDropdown = ({ taskId }) => {
   );
 };
 
-const Task = ({ taskId }) => {
-  const [globalState, globalActions] = useGlobal();
-
-  const taskArrayId = globalState.taskList.findIndex((task) => task.id == taskId);
+const Task = ({ taskId }) => {  
+  const tasks = useTasksStore(store => store.tasks)
+  const taskArrayId = tasks.findIndex((task) => task.id == taskId);
 
   return (
     <>
       <List.Item.Meta
         title={
           <>
-            <Text type="secondary">{globalState.taskList[taskArrayId].id}</Text>
+            <Text type="secondary">{tasks[taskArrayId].id}</Text>
             {". "}
-            <Text type="primary">{globalState.taskList[taskArrayId].name}</Text>
+            <Text type="primary">{tasks[taskArrayId].name}</Text>
           </>
         }
-        description={globalState.taskList[taskArrayId].trackedObjectName}
+        description={tasks[taskArrayId].trackedObjectName}
       />
       <RenderTaskStatus
-        status={globalState.taskList[taskArrayId].status}
-        progress={globalState.taskList[taskArrayId].progress}
+        status={tasks[taskArrayId].status}
+        progress={tasks[taskArrayId].progress}
       />
       <Button
         onClick={() => {
-          console.log("clicked");
-          Axios.post("/api/v1/tasks/" + globalState.taskList[taskArrayId].id + "/execute");
+          Axios.post("/api/v1/tasks/" + tasks[taskArrayId].id + "/execute");
         }}
         shape="circle"
         type="text"
@@ -106,7 +103,7 @@ const Task = ({ taskId }) => {
         icon={<PlayCircleOutlined />}
       />
       <Dropdown
-        overlay={<TaskExtraDropdown taskId={globalState.taskList[taskArrayId].id} />}
+        overlay={<TaskExtraDropdown taskId={tasks[taskArrayId].id} />}
         placement="bottomRight"
         arrow
       >

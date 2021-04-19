@@ -39,7 +39,6 @@ const NewTask = () => {
         <Form
           form={form}
           onFinish={(values) => {
-            console.log(values);
             Axios.post("/api/v1/tasks", { ...values }).then(() => {
               message.success("Task sucesfully created!");
             });

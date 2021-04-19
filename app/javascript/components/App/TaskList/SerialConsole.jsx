@@ -5,6 +5,7 @@ import Axios from "axios";
 import { FixedSizeList as list } from "react-window";
 
 import useGlobal from "../../../stores/globalStateStore";
+import { useSerialMessagesStore } from "stores/serialMessagesStore";
 
 const apiUrl = "/api/v1";
 
@@ -12,21 +13,14 @@ const { Search } = Input;
 
 const SerialConsole = () => {
   const [globalState, globalActions] = useGlobal();
+  const serialMessages = useSerialMessagesStore(s => s.serialMessages);
+  const {sendSerialMessage, receiveSerialMessage} = useSerialMessagesStore(s => ({sendSerialMessage: s.sendSerialMessage, receiveSerialMessage: s.receiveSerialMessage}));
 
   useEffect(() => {
     globalState.cableConnection.subscriptions.create("SerialPortChannel", {
-      received: (message) => {
-        console.log(message);
-        if (JSON.parse(message).type !== "actionResponse") {
-          globalActions.addSerialMessage(message);
-        }
-      },
-      connected: () => {
-        console.log("SerialPortChannel connected!");
-      },
-      disconnected: () => {
-        console.log("SerialPortChannel disconnected!");
-      },
+      received: (message) => {if(JSON.parse(message).type !== "actionResponse") receiveSerialMessage(message)},
+      connected: () => console.log("SerialPortChannel connected!"),
+      disconnected: () => console.log("SerialPortChannel disconnected!"),
     });
   }, []);
 
@@ -41,12 +35,12 @@ const SerialConsole = () => {
       >
         <List
           style={{ overflow: "auto", height: "400px" }}
-          dataSource={globalState.serialMessages}
+          dataSource={serialMessages}
           renderItem={(message) => <List.Item>{message}</List.Item>}
         />
         <Search
           placeholder="Your message:"
-          onSearch={(data) => globalActions.sendSerialMessage(data)}
+          onSearch={(data) => sendSerialMessage(data)}
           enterButton={<CaretUpOutlined />}
         />
       </div>
