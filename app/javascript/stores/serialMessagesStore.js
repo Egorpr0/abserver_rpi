@@ -5,7 +5,7 @@ export const useSerialMessagesStore = create(set => ({
   receiveSerialMessage: (receivedMessage) => {
     set(state => {
       var oldMessages = Array.from(state.serialMessages);
-      if (oldMessages.length >= 8) oldMessages.shift()
+      if (oldMessages.length >= 100) oldMessages.shift()
       oldMessages.push(receivedMessage);
       return ({serialMessages: oldMessages});
     })

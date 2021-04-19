@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Card, Text, List, Input, message } from "antd";
 import { CaretUpOutlined } from "@ant-design/icons";
 import Axios from "axios";
@@ -15,6 +15,7 @@ const SerialConsole = () => {
   const [globalState, globalActions] = useGlobal();
   const serialMessages = useSerialMessagesStore(s => s.serialMessages);
   const {sendSerialMessage, receiveSerialMessage} = useSerialMessagesStore(s => ({sendSerialMessage: s.sendSerialMessage, receiveSerialMessage: s.receiveSerialMessage}));
+  const messagesListRef = useRef(null);
 
   useEffect(() => {
     globalState.cableConnection.subscriptions.create("SerialPortChannel", {
@@ -23,6 +24,10 @@ const SerialConsole = () => {
       disconnected: () => console.log("SerialPortChannel disconnected!"),
     });
   }, []);
+
+  useEffect(() => {
+    messagesListRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [serialMessages])
 
   return (
     <Card title="Serial console" style={{ width: "100%", height: "100%" }}>
@@ -35,6 +40,7 @@ const SerialConsole = () => {
       >
         <List
           style={{ overflow: "auto", height: "400px" }}
+          footer={<span ref={messagesListRef}></span>}
           dataSource={serialMessages}
           renderItem={(message) => <List.Item>{message}</List.Item>}
         />
