@@ -89,7 +89,7 @@ class Arduino::ArduinoConnectorJob
             terminate_job([$send, $recieve, $connectionWatcher])
           end
 
-          sleep($watcherFrequency)         
+          sleep($watcherFrequency)
         end
       end
 
